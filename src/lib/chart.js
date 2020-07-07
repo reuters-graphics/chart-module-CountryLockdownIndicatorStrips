@@ -12,6 +12,7 @@ class CountryLockdownIndicatorStrips extends ChartComponent {
 
   defaultData = defaultData;
 
+
   draw() {
     const data = this.data();
     const props = this.props();
@@ -59,5 +60,5 @@ class CountryLockdownIndicatorStrips extends ChartComponent {
     return this;
   }
 }
-
+console.log(defaultData);
 export default CountryLockdownIndicatorStrips;

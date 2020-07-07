@@ -1,19 +1,19 @@
 ![](./badge.svg)
 
-# CountryLockdownScatterplot
+# CountryLockdownIndicatorStrips
 
 ### Install
 
 ```
-$ yarn add @reuters-graphics/chart-module-countrylockdownscatterplot
+$ yarn add @reuters-graphics/chart-module-countrylockdownindicatorstrips
 ```
 
 ### Use
 
 ```javascript
-import CountryLockdownScatterplot from '@reuters-graphics/chart-module-countrylockdownscatterplot';
+import CountryLockdownindicatorstrips from '@reuters-graphics/chart-module-countrylockdownindicatorstrips';
 
-const myChart = new CountryLockdownScatterplot();
+const myChart = new CountryLockdownindicatorstrips();
 
 // To create your chart, pass a selector string to the chart's selection method,
 // as well as any props or data to their respective methods. Then call draw.
@@ -32,12 +32,12 @@ myChart
 myChart.draw();
 ```
 
-To apply this chart's default styles when using SCSS, simply define the variable `$CountryLockdownScatterplot-container` to represent the ID or class of the chart's container(s) and import the `_chart.scss` partial.
+To apply this chart's default styles when using SCSS, simply define the variable `$CountryLockdownindicatorstrips-container` to represent the ID or class of the chart's container(s) and import the `_chart.scss` partial.
 
 ```CSS
-$CountryLockdownScatterplot-container: '#chart';
+$CountryLockdownindicatorstrips-container: '#chart';
 
-@import '~@reuters-graphics/chart-module-countrylockdownscatterplot/scss/main';
+@import '~@reuters-graphics/chart-module-countrylockdownindicatorstrips/scss/main';
 ```
 
 ## Developing chart modules
