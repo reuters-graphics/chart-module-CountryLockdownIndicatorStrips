@@ -1,8 +1,10 @@
+
 import Chart from '../lib/chart.js';
 import ChartContainer from './furniture/ChartContainer';
 import React from 'react';
 import { base } from '@reuters-graphics/style-color/dist/categorical';
 import debounce from 'lodash/debounce';
+
 
 class ChartComponent extends React.Component {
   state = { width: '' };

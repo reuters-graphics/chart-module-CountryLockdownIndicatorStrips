@@ -2,7 +2,7 @@ import ChartComponent from './base/ChartComponent';
 import d3 from './utils/d3';
 import defaultData from './defaultData.json';
 
-class CountryLockdownScatterplot extends ChartComponent {
+class CountryLockdownIndicatorStrips extends ChartComponent {
   defaultProps = {
     stroke: '#aaa',
     strokeWidth: 1,
@@ -27,7 +27,7 @@ class CountryLockdownScatterplot extends ChartComponent {
       .attr('width', width)
       .attr('height', props.height)
       .appendSelect('g')
-      .attr('transform', `translate(${width / 2 - 60}, 0)`);
+      // .attr('transform', `translate(${width / 2 - 60}, 0)`);
 
     const circles = g.selectAll('circle')
       .data(data, (d, i) => i);
@@ -60,4 +60,4 @@ class CountryLockdownScatterplot extends ChartComponent {
   }
 }
 
-export default CountryLockdownScatterplot;
+export default CountryLockdownIndicatorStrips;
