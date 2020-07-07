@@ -21,21 +21,22 @@ class ChartComponent extends React.Component {
     this.chart
       .selection(this.chartContainer.current)
       .props({ fill: base.blue.hex })
+      // .data()
       .draw();
 
-    // Use it again.
-    setTimeout(() => {
-      this.chart
-        .data([20, 34, 48, 60])
-        .props({ fill: base.orange.hex })
-        .draw();
-    }, 1000);
-    setTimeout(() => {
-      this.chart
-        .data([30, 50, 30])
-        .props({ fill: base.blue.hex })
-        .draw();
-    }, 2000);
+    // // Use it again.
+    // setTimeout(() => {
+    //   this.chart
+    //     // .data([20, 34, 48, 60])
+    //     .props({ fill: base.orange.hex })
+    //     .draw();
+    // }, 1000);
+    // setTimeout(() => {
+    //   this.chart
+    //     // .data([30, 50, 30])
+    //     .props({ fill: base.blue.hex })
+    //     .draw();
+    // }, 2000);
 
     // Add a listener to resize chart with the window.
     window.addEventListener('resize', this.resize);
