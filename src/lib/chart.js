@@ -1,11 +1,10 @@
 import ChartComponent from './base/ChartComponent';
 import d3 from './utils/d3';
 import defaultData from './defaultData.json';
-
-// see docs on https://github.com/reuters-graphics/graphics-atlas-client
-import AtlasMetadataClient from '@reuters-graphics/graphics-atlas-client';
 import { interpolate, interpolateHsl, interpolateHcl } from 'd3';
-const atlastClient = new AtlasMetadataClient();
+// see docs on https://github.com/reuters-graphics/graphics-atlas-client
+// import AtlasMetadataClient from '@reuters-graphics/graphics-atlas-client';
+// const atlastClient = new AtlasMetadataClient();
 
 const dateParse = d3.timeParse('%Y-%m-%d');
 const dateFormat = d3.timeFormat('%b %e');
@@ -14,15 +13,13 @@ const numberFormat_tt = d3.format(',');
 
 class CountryLockdownIndicatorStrips extends ChartComponent {
     defaultProps = {
-        locale: 'en',
-        countryISO2: 'IN',
         dataParams: {
             date: 'date',
             index: 'c1',
             steps: 2, // stepValue = 0, 1...
             stepValue: 'flag',
         },
-        height: 50,
+        height: 200,
         margin: {
             top: 10,
             right: 10,
@@ -31,12 +28,25 @@ class CountryLockdownIndicatorStrips extends ChartComponent {
         },
         valign: 'center', // start, center, baseline
         baseColor: '#ECEFF4',
-        // stripColor: {
-        //     0: '#ECEFF4',
-        //     1: '#d1eeea',
-        //     2: '#ffe47f',
-        //     3: '#a50f15',
-        // },
+        stripColor: { // should be numeric values that are mapped from the data
+            0: '#d1eeea',
+            1: '#ffe47f',
+            2: 'orange',
+            3: '#a50f15',
+        },
+        legendItems: { // should contain items from stripColor
+            'null': 'no data',
+            'stepLegend': {
+                0: 'targeted',
+                1: 'nationwide'
+            },
+            'indexLegend': {
+                0: 'no measures',
+                1: 'recommend closing',
+                2: 'require closing (only some levels or categories, eg just high school, or just public schools)',
+                3: 'require closing all levels'
+            },
+        }
     };
 
     defaultData = defaultData;
@@ -47,7 +57,7 @@ class CountryLockdownIndicatorStrips extends ChartComponent {
         const node = this.selection().node();
 
         // get country details from AtlasClient from ISO-2
-        props.country = atlastClient.getCountry(props.countryISO2);
+        // props.country = atlastClient.getCountry(props.countryISO2);
 
         const {
             width,
@@ -59,7 +69,7 @@ class CountryLockdownIndicatorStrips extends ChartComponent {
         // main chart container
         const chartDiv = this.selection()
             .appendSelect('div') // see docs in ./utils/d3.js
-            .attr('class', 'CountryLockdownIndicatorStrips')
+            .attr('class', `CountryLockdownIndicatorStrips`)
             .style('width', `${width}px`)
             .style('height', `${props.height}px`)
             .appendSelect('div')
@@ -91,49 +101,86 @@ class CountryLockdownIndicatorStrips extends ChartComponent {
             .selectAll('.bar')
             .data(data, (d, i) => d[props.dataParams.date]); // for smooth data updation
 
+        const stripheight = props.legendItems ? (props.height - props.margin.top - props.margin.bottom) * 0.2 : (props.height - props.margin.top - props.margin.bottom);
+
         bars.enter().append('div')
             .attr('class', d => `bar ${d[props.dataParams.date]}`)
+            .style('display', 'inline-block')
             .style('height', d => {
-                const stepSize = (props.height - props.margin.top - props.margin.bottom) / props.dataParams.steps;
+                const stepSize = (stripheight) / props.dataParams.steps;
                 const step = d[props.dataParams.stepValue] + 1;
                 return d[props.dataParams.index] ? (step ? step * stepSize + 'px' : stepSize + 'px') : stepSize + 'px';
             })
             .style('width', xScale.bandwidth() + 'px')
-            .style('display', 'inline-block')
-            .style('background', props.baseColor)
             .style('background', d => {
                 let val = parseFloat(d[props.dataParams.index]);
-                console.log((val === null) || (isNaN(val)))
+                return (val !== null) && !(isNaN(val)) ? colorScale(val) : props.baseColor;
+            })
+            .merge(bars)
+            .transition(transition)
+            .style('display', 'inline-block')
+            .style('height', d => {
+                const stepSize = (stripheight) / props.dataParams.steps;
+                const step = d[props.dataParams.stepValue] + 1;
+                return d[props.dataParams.index] ? (step ? step * stepSize + 'px' : stepSize + 'px') : stepSize + 'px';
+            })
+            .style('width', xScale.bandwidth() + 'px')
+            .style('background', d => {
+                let val = parseFloat(d[props.dataParams.index]);
                 return (val !== null) && !(isNaN(val)) ? colorScale(val) : props.baseColor;
             });
 
-        // const circles = g.selectAll('circle')
-        //   .data(data, (d, i) => d[props.dataParams.date]);
+        bars.exit()
+            .transition(transition)
+            .attr('height', 0)
+            .remove();
 
-        // circles
-        //   .style('fill', props.fill)
-        //   .style('stroke', props.stroke);
 
-        // circles.enter().append('circle')
-        //   .style('fill', props.fill)
-        //   .style('stroke', props.stroke)
-        //   .style('stroke-width', props.strokeWidth)
-        //   .attr('cy', props.height / 2)
-        //   .attr('cx', (d, i) =>
-        //     data.slice(0, i).reduce((a, b) => a + b, 0) + (d / 2)
-        //   )
-        //   .merge(circles)
-        //   .transition(transition)
-        //   .attr('cx', (d, i) =>
-        //     data.slice(0, i).reduce((a, b) => a + b, 0) + (d / 2)
-        //   )
-        //   .attr('r', d => d / 2);
+        if (props.legendItems) {
+            const indexLegendItems = [];
+            (Object.keys(props.legendItems.indexLegend)).forEach(d => {
+                let item = {
+                    key: d,
+                    value: props.legendItems.indexLegend[d]
+                }
+                indexLegendItems.push(item);
+            });
+            if (props.legendItems['null']) {
+                indexLegendItems.push({
+                    key: 'null',
+                    value: props.legendItems['null']
+                })
+            }
+            const legendWidth = (width - props.margin.right - props.margin.left) / indexLegendItems.length;
+            console.log(indexLegendItems)
+                // make legend
+            const indexLegend = chartDiv.appendSelect('div.legend-container')
+                // .style('align-items', `${props.valign}`)
+                .selectAll('.legend-div')
+                .data(indexLegendItems); // for smooth data updation
 
-        // circles.exit()
-        //   .transition(transition)
-        //   .attr('r', 0)
-        //   .remove();
+            indexLegend.enter().append('div')
+                .attr('class', `legend-div indexLegend`)
+                .style('display', 'flex')
+                .style('align-items', `start`)
+                .style('width', `${legendWidth}px`)
+                .html(d => {
+                    let color = (+d.key !== null) && !(isNaN(+d.key)) ? props.stripColor[+d.key] : props.baseColor;
+                    return `<span style="width:1rem; height:1rem;min-width:1rem; min-height:1rem; background: ${color}"></span> <p style="margin:0 0 0 0.5rem;">${d.value}</p>`
+                })
+                .merge(indexLegend)
+                .style('width', `${legendWidth}px`)
+                .html(d => {
+                    let color = (+d.key !== null) && !(isNaN(+d.key)) ? props.stripColor[+d.key] : props.baseColor;
+                    return `<span style="width:1rem; height:1rem;min-width:1rem; min-height:1rem; background: ${color}"></span> <p style="margin:0 0 0 0.5rem;">${d.value}</p>`
+                });
 
+            indexLegend.exit()
+                .transition(transition)
+                .remove();
+
+
+        }
         return this;
     }
 }
