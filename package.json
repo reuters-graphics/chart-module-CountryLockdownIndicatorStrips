@@ -17,9 +17,10 @@
     "@reuters-graphics/eslint-config": "^0.0.2",
     "@reuters-graphics/style-color": "^1.0.0",
     "@reuters-graphics/style-theme-eisbaer": "^0.2.3",
+    "@reuters-graphics/stylelint-config": "^0.0.2",
     "@rollup/plugin-json": "^4.1.0",
     "@rollup/plugin-node-resolve": "^8.0.1",
-    "eslint": "^6.8.0",
+    "eslint": "^7.4.0",
     "next": "^9.4.4",
     "next-transpile-modules": "^3.3.0",
     "react": "^16.13.1",
@@ -30,7 +31,8 @@
     "rollup-plugin-json": "^4.0.0",
     "rollup-plugin-node-externals": "^2.2.0",
     "rollup-plugin-node-resolve": "^5.2.0",
-    "sass": "^1.26.8"
+    "sass": "^1.26.8",
+    "stylelint": "^13.6.1"
   },
   "dependencies": {
     "@reuters-graphics/graphics-atlas-client": "^0.0.6",
