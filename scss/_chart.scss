@@ -3,9 +3,18 @@
     .CountryLockdownIndicatorStrips {
         .legend-container {
             margin-top: 1rem;
-            display: block;
-            @media (min-width: 768px) {
+            margin-bottom: 1rem;
+            display: flex;
+            flex-flow: wrap;
+            width: 50%;
+            @media (max-width: 768px) {
                 display: flex;
+                flex-flow: column;
+            }
+            @media (max-width: 576px) {
+                display: flex;
+                flex-flow: column;
+                width: 100%;
             }
             .legend-div.indexLegend {
                 @media (max-width: 768px) {

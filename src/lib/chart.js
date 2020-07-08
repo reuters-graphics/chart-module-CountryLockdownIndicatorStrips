@@ -1,7 +1,8 @@
 import ChartComponent from './base/ChartComponent';
 import d3 from './utils/d3';
 import defaultData from './defaultData.json';
-import { interpolate, interpolateHsl, interpolateHcl } from 'd3';
+import { interpolateHcl } from 'd3';
+import d3SelectionMulti from 'd3-selection-multi';
 // see docs on https://github.com/reuters-graphics/graphics-atlas-client
 // import AtlasMetadataClient from '@reuters-graphics/graphics-atlas-client';
 // const atlastClient = new AtlasMetadataClient();
@@ -19,12 +20,12 @@ class CountryLockdownIndicatorStrips extends ChartComponent {
             steps: 2, // stepValue = 0, 1...
             stepValue: 'flag',
         },
-        height: 200,
+        height: 250,
         margin: {
             top: 10,
-            right: 10,
+            right: 0,
             bottom: 10,
-            left: 10,
+            left: 0,
         },
         valign: 'center', // start, center, baseline
         baseColor: '#ECEFF4',
@@ -60,7 +61,7 @@ class CountryLockdownIndicatorStrips extends ChartComponent {
         // props.country = atlastClient.getCountry(props.countryISO2);
 
         const {
-            width,
+            width
         } = node.getBoundingClientRect();
 
         const transition = d3.transition()
@@ -71,9 +72,14 @@ class CountryLockdownIndicatorStrips extends ChartComponent {
             .appendSelect('div') // see docs in ./utils/d3.js
             .attr('class', `CountryLockdownIndicatorStrips`)
             .style('width', `${width}px`)
-            .style('height', `${props.height}px`)
+            .style('height', `auto`)
             .appendSelect('div')
-            .style('transform', `translate(${props.margin.left}px, ${props.margin.top}px)`);
+            .styles({
+                'margin-top': `${props.margin.top}px`,
+                'margin-right': `${props.margin.right}px`,
+                'margin-bottom': `${props.margin.bottom}px`,
+                'margin-left': `${props.margin.left}px`,
+            });
 
         // set scales
         const yScale = d3.scaleLinear()
@@ -152,8 +158,9 @@ class CountryLockdownIndicatorStrips extends ChartComponent {
                 })
             }
             const legendWidth = (width - props.margin.right - props.margin.left) / indexLegendItems.length;
-            console.log(indexLegendItems)
-                // make legend
+
+
+            // make legend
             const indexLegend = chartDiv.appendSelect('div.legend-container')
                 // .style('align-items', `${props.valign}`)
                 .selectAll('.legend-div')
@@ -163,13 +170,13 @@ class CountryLockdownIndicatorStrips extends ChartComponent {
                 .attr('class', `legend-div indexLegend`)
                 .style('display', 'flex')
                 .style('align-items', `start`)
-                .style('width', `${legendWidth}px`)
+                // .style('width', `${legendWidth}px`)
                 .html(d => {
                     let color = (+d.key !== null) && !(isNaN(+d.key)) ? props.stripColor[+d.key] : props.baseColor;
                     return `<span style="width:1rem; height:1rem;min-width:1rem; min-height:1rem; background: ${color}"></span> <p style="margin:0 0 0 0.5rem;">${d.value}</p>`
                 })
                 .merge(indexLegend)
-                .style('width', `${legendWidth}px`)
+                // .style('width', `${legendWidth}px`)
                 .html(d => {
                     let color = (+d.key !== null) && !(isNaN(+d.key)) ? props.stripColor[+d.key] : props.baseColor;
                     return `<span style="width:1rem; height:1rem;min-width:1rem; min-height:1rem; background: ${color}"></span> <p style="margin:0 0 0 0.5rem;">${d.value}</p>`
