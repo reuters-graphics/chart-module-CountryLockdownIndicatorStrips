@@ -4,10 +4,13 @@
         .legend-container {
             margin-top: 1rem;
             display: block;
-            @media (min-width: 576px) {
+            @media (min-width: 768px) {
                 display: flex;
             }
             .legend-div.indexLegend {
+                @media (max-width: 768px) {
+                    width: auto!important;
+                }
                 margin: 0.5rem 1.5rem 0.5rem 0;
                 p {
                     line-height: 1rem;
