@@ -1,32 +1,45 @@
 #{$CountryLockdownIndicatorStrips-container} {
-    /* Write your chart styles here */
-    .CountryLockdownIndicatorStrips {
-        .legend-container {
-            margin-top: 1rem;
-            margin-bottom: 1rem;
-            display: flex;
-            flex-flow: wrap;
-            width: 50%;
-            @media (max-width: 768px) {
-                display: flex;
-                flex-flow: column;
-            }
-            @media (max-width: 576px) {
-                display: flex;
-                flex-flow: column;
-                width: 100%;
-            }
-            .legend-div.indexLegend {
-                @media (max-width: 768px) {
-                    width: auto!important;
-                }
-                margin: 0.5rem 1.5rem 0.5rem 0;
-                p {
-                    line-height: 1rem;
-                    font-size: 0.875rem;
-                    font-weight: lighter;
-                }
-            }
-        }
-    }
+  /* Write your chart styles here */
+  .CountryLockdownIndicatorStrips {
+      .legend-container {
+          margin-top: 1rem;
+          display: flex;
+          .indexLegend {
+              display: flex;
+              flex-flow: wrap;
+              width: 60%;
+              @media (max-width: 768px) {
+                  display: flex;
+                  flex-flow: column;
+              }
+              @media (max-width: 576px) {
+                  display: flex;
+                  flex-flow: column;
+                  width: 100%;
+              }
+              .legend-item {
+                  @media (max-width: 768px) {
+                      width: auto !important;
+                  }
+                  margin: 0.5rem 1.5rem 0.5rem 0;
+                  p {
+                      line-height: 1rem;
+                      font-size: 0.875rem;
+                      font-weight: lighter;
+                  }
+              }
+          }
+          .stepLegend {
+              display: flex;
+              flex-flow: column;
+              .legend-item {
+                  p {
+                      line-height: 1rem;
+                      font-size: 0.875rem;
+                      font-weight: lighter;
+                  }
+              }
+          }
+      }
+  }
 }
