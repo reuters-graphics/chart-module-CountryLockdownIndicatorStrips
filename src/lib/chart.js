@@ -11,12 +11,12 @@ import d3SelectionMulti from 'd3-selection-multi';
 
 const dateParse = d3.timeParse('%Y-%m-%d');
 const dateFormat = d3.timeFormat('%b %e');
-const dateFormat_tt = d3.timeFormat('%B %e');
-const numberFormat_tt = d3.format(',');
+// const dateFormat_tt = d3.timeFormat('%B %e');
+// const numberFormat_tt = d3.format(',');
 
 class CountryLockdownIndicatorStrips extends ChartComponent {
     defaultProps = {
-      dateSeries: ['2019-12-31', '2020-07-10'], // yyyy-mm-dd format
+      dateSeries: ['2019-12-31', '2020-07-08'], // yyyy-mm-dd format, end date not included
       dataParams: {
         date: 'date',
         index: 'c1',
@@ -27,9 +27,9 @@ class CountryLockdownIndicatorStrips extends ChartComponent {
       stripHeight: 50,
       margin: {
         top: 10,
-        right: 0,
+        right: 18,
         bottom: 10,
-        left: 0,
+        left: 18,
       },
       valign: 'center', // start, center, baseline
       baseColor: '#ECEFF4',
@@ -52,6 +52,8 @@ class CountryLockdownIndicatorStrips extends ChartComponent {
           3: 'require closing all levels',
         },
       },
+      axis: true,
+      markDates: ['2019-12-31', '2020-03-25', '2020-07-07'], // yyyy-mm-dddd
     };
 
     defaultData = defaultData;
@@ -65,6 +67,7 @@ class CountryLockdownIndicatorStrips extends ChartComponent {
         props.dateSeries = [dateParse(allData[0].date), dateParse(allData[allData.length - 1].date)];
       }
       const dateSeries = getDates(props.dateSeries[0], props.dateSeries[1]);   
+      // console.log((dateSeries));
 
       // set data for the date series
       const data = dateSeries.map((d) => {
@@ -78,7 +81,6 @@ class CountryLockdownIndicatorStrips extends ChartComponent {
         }
       }); 
 
-      console.log(data);
       // get country details from AtlasClient from ISO-2
       // props.country = atlastClient.getCountry(props.countryISO2);
 
@@ -112,7 +114,7 @@ class CountryLockdownIndicatorStrips extends ChartComponent {
 
       const xScale = d3.scaleBand()
         .domain(dateSeries)
-        .range([props.margin.left, width - props.margin.right])
+        .range([0, width - props.margin.left - props.margin.right])
         .padding(0);
 
       const colorDomain = props.stripColor ? (Object.keys(props.stripColor)).map(d => +d) : d3.extent(data.map(d => d[props.dataParams.index]));
@@ -165,6 +167,29 @@ class CountryLockdownIndicatorStrips extends ChartComponent {
         .attr('height', 0)
         .remove();
 
+      // add axis
+      if (props.axis) {
+        const markDates = props.markDates ? props.markDates.map(d => dateParse(d)) : [dateSeries[0], dateSeries.slice(-1)[0]];
+
+        console.log(markDates);
+
+        const xAxis = chartDiv.appendSelect('svg')
+          .attr('width', width - props.margin.left - props.margin.right)
+          .attr('height', 25)
+          .attr('transform', 'translate(0, 0)');
+
+        xAxis.appendSelect('g.axis-x')
+          .attr('class', 'axis-x axis')
+          .transition(transition)
+          .attr('transform', 'translate(0,0)')
+          .call(
+            d3.axisBottom(xScale)
+              .tickValues(markDates)
+              .tickFormat(dateFormat)
+          );
+      }
+
+      // chart legend
       if (props.legendItems) {
         const indexLegendItems = [];
         (Object.keys(props.legendItems.indexLegend)).forEach(d => {
