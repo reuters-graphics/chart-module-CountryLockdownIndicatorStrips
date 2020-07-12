@@ -1,5 +1,7 @@
+/* eslint-disable no-trailing-spaces */
 import ChartComponent from './base/ChartComponent';
 import d3 from './utils/d3';
+import { getDates, formatDateObject } from './utils/utils';
 import defaultData from './defaultData.json';
 import { interpolateHcl } from 'd3';
 import d3SelectionMulti from 'd3-selection-multi';
@@ -14,11 +16,12 @@ const numberFormat_tt = d3.format(',');
 
 class CountryLockdownIndicatorStrips extends ChartComponent {
     defaultProps = {
+      dateSeries: ['2019-12-31', '2020-07-10'], // yyyy-mm-dd format
       dataParams: {
         date: 'date',
         index: 'c1',
-        steps: 2, // stepValue = 0, 1...
         stepValue: 'flag',
+        steps: 2, // stepValue = 0, 1...
       },
       height: 150,
       stripHeight: 50,
@@ -54,10 +57,28 @@ class CountryLockdownIndicatorStrips extends ChartComponent {
     defaultData = defaultData;
 
     draw() {
-      const data = this.data();
+      const allData = this.data();
       const props = this.props();
       const node = this.selection().node();
 
+      if (!props.dateSeries) {
+        props.dateSeries = [dateParse(allData[0].date), dateParse(allData[allData.length - 1].date)];
+      }
+      const dateSeries = getDates(props.dateSeries[0], props.dateSeries[1]);   
+
+      // set data for the date series
+      const data = dateSeries.map((d) => {
+        const match = allData.find((e) => (e[props.dataParams.date]) === (formatDateObject(d)));
+        if (match) {
+          return match;
+        } else {
+          const obj = {};
+          obj[props.dataParams.date] = formatDateObject(d);
+          return obj;
+        }
+      }); 
+
+      console.log(data);
       // get country details from AtlasClient from ISO-2
       // props.country = atlastClient.getCountry(props.countryISO2);
 
@@ -90,7 +111,7 @@ class CountryLockdownIndicatorStrips extends ChartComponent {
         .range([stripheight, props.margin.top]);
 
       const xScale = d3.scaleBand()
-        .domain(data.map(d => dateParse(d[props.dataParams.date])))
+        .domain(dateSeries)
         .range([props.margin.left, width - props.margin.right])
         .padding(0);
 
