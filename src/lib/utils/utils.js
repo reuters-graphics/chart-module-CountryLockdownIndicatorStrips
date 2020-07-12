@@ -13,7 +13,10 @@ function getDates(startDate, stopDate) {
 }
 
 function formatDateObject(date, separator) {
-  separator = separator ? separator : '-';
+  if (!separator) {
+    separator = '-';
+  }
+
   const yyyy = date.getFullYear();
   const mm = date.getMonth() < 10 ? `0${date.getMonth() + 1}` : date.getMonth() + 1;
   const dd = date.getDate() < 10 ? `0${date.getDate()}` : date.getDate();
