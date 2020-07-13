@@ -109,7 +109,7 @@ class CountryLockdownIndicatorStrips extends ChartComponent {
 
       const yScale = d3.scaleLinear()
         .domain([0, props.dataParams.steps - 1])
-        .range([stripheight, props.margin.top]);
+        .range([stripheight / (props.dataParams.steps), stripheight]);
 
       const colorDomain = props.stripColor ? (Object.keys(props.stripColor)).map(d => +d) : d3.extent(data.map(d => d[props.dataParams.index]));
   
@@ -154,9 +154,7 @@ class CountryLockdownIndicatorStrips extends ChartComponent {
         .attr('class', d => `bar ${d[props.dataParams.date]}`)
         .style('display', 'inline-block')
         .style('height', d => {
-          const stepSize = (stripheight) / props.dataParams.steps;
-          const step = d[props.dataParams.stepValue] + 1;
-          return d[props.dataParams.index] ? (step ? step * stepSize + 'px' : stepSize + 'px') : stepSize + 'px';
+          return yScale(d[props.dataParams.stepValue]) + 'px';
         })
         .style('width', xScale.bandwidth() + 'px')
         .style('background', d => {
@@ -167,9 +165,7 @@ class CountryLockdownIndicatorStrips extends ChartComponent {
         .transition(transition)
         .style('display', 'inline-block')
         .style('height', d => {
-          const stepSize = (stripheight) / props.dataParams.steps;
-          const step = d[props.dataParams.stepValue] + 1;
-          return d[props.dataParams.index] ? (step ? step * stepSize + 'px' : stepSize + 'px') : stepSize + 'px';
+          return yScale(d[props.dataParams.stepValue]) + 'px';
         })
         .style('width', xScale.bandwidth() + 'px')
         .style('background', d => {

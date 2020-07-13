@@ -1253,7 +1253,7 @@
 
 "@reuters-graphics/chart-module-weeklyaverage@https://github.com/reuters-graphics/chart-module-weeklyaverage.git":
   version "0.0.1"
-  resolved "https://github.com/reuters-graphics/chart-module-weeklyaverage.git#d47a99fb22284afb8969f105b0d58ea7fd810581"
+  resolved "https://github.com/reuters-graphics/chart-module-weeklyaverage.git#fbce249d81feec9c64d4a354eac62ebe5a1eeaf8"
   dependencies:
     "@reuters-graphics/graphics-atlas-client" "^0.0.5"
     d3 "^5.16.0"

@@ -56,7 +56,7 @@ class ChartComponent extends React.Component {
           padding: 0, // to set padding between the bars.
           // value should be between 0 to 1
 
-          labels: false, // Setting this to true will show a label
+          labels: true, // Setting this to true will show a label
           // to explain what the bars and line are
           text: {
             subhed: 'Weekly average infections reported',
