@@ -2,6 +2,10 @@
   $text-color: rgba(255, 255, 255, 0.75);
   /* Write your chart styles here */
   .CountryLockdownIndicatorStrips {
+    .chart-title h6{
+      font-weight: lighter;
+      color: rgba(255, 255, 255, 0.75)!important;
+    }
       .legend-container {
           margin-top: 1rem;
           display: flex;
@@ -26,7 +30,7 @@
                   margin: 0.5rem 1.5rem 0.5rem 0;
                   p {
                       line-height: 1rem;
-                      font-size: 0.875rem;
+                      font-size: 0.8rem;
                       font-weight: lighter;
                   }
               }
@@ -40,7 +44,7 @@
                 }
                   p {
                       line-height: 1rem;
-                      font-size: 0.875rem;
+                      font-size: 0.8rem;
                       font-weight: lighter;
                   }
               }

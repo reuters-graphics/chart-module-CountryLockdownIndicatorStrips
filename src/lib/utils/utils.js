@@ -29,7 +29,13 @@ import { timeFormat, timeParse } from 'd3-time-format';
 
 function getDates(startDate, stopDate) {
   const dateParse = timeParse('%Y-%m-%d');
-  const dateArray = timeDay.range(dateParse(startDate), dateParse(stopDate), 1);
+
+  // include last day
+  stopDate = dateParse(stopDate);
+
+  const endDate = new Date(stopDate.getFullYear(), stopDate.getMonth(), stopDate.getDate() + 1);
+
+  const dateArray = timeDay.range(dateParse(startDate), endDate, 1);
   return dateArray;
 }
 function formatDateObject(date, separator) {

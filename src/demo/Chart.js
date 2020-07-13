@@ -40,21 +40,27 @@ class ChartComponent extends React.Component {
         .selection(this.myChartContainer.current)
         .data(casesData)
         .props({
-          stroke: '#4C566A', // colour of line
-          strokeWidth: 3.618, // width of the line
+          stroke: 'rgba(252, 229, 135, 0.35)', // colour of line
+          strokeWidth: 2.5, // width of the line
           fill: '#eee', // colour of the bars
-          height: 200, // chart height
+          height: 150, // chart height
           avg_days: 7, // avg line should be an how many day rolling avg
-
+          left_y_axis: true,
+          x_axis: false,
           bars: false, // True by default.
           // If you want just the line, set value to true
-
+          margin: {
+            left: 18, right: 18, top: 10, bottom: 5,
+          },
+          date_range: ['2019-12-31', '2020-07-07'],
           padding: 0, // to set padding between the bars.
           // value should be between 0 to 1
 
           labels: false, // Setting this to true will show a label
           // to explain what the bars and line are
-
+          text: {
+            subhed: 'Weekly average infections reported',
+          },
           variable_name: 'cases', // What is this a chart of? Infections? Deaths? Tests?
         })
         .draw();
