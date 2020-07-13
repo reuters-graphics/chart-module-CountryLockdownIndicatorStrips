@@ -32,12 +32,12 @@ class CountryLockdownIndicatorStrips extends ChartComponent {
         left: 18,
       },
       valign: 'center', // start, center, baseline
-      baseColor: '#ECEFF4',
+      baseColor: '#3B4252',
       stripColor: { // should be numeric values that are mapped from the data
-        0: '#d1eeea',
-        1: '#ffe47f',
-        2: 'orange',
-        3: '#a50f15',
+        0: '#4C566A',
+        1: '#948072',
+        2: '#f68e26',
+        3: '#de2d26',
       },
       legendItems: { // should contain items from stripColor
         null: 'no data',
@@ -265,7 +265,7 @@ class CountryLockdownIndicatorStrips extends ChartComponent {
             })
             .html((d, i) => {
               const stepSize = (stripheight) / stepLegendItems.length;
-              return `<span style="width:${8}px; height:${((+d.key) + 1) * stepSize}px; background:transparent; border: 0.5px solid #333333;"></span><p style="margin:0 0 0 0.5rem;">${d.value}</p>`;
+              return `<span style="width:${8}px; height:${((+d.key) + 1) * stepSize}px; background-color:${props.baseColor};"></span><p style="margin:0 0 0 0.5rem;">${d.value}</p>`;
             })
             .merge(stepLegend)
             .styles({
@@ -274,7 +274,7 @@ class CountryLockdownIndicatorStrips extends ChartComponent {
             })
             .html((d, i) => {
               const stepSize = (stripheight) / stepLegendItems.length;
-              return `<span style="width:${8}px; height:${((+d.key) + 1) * stepSize}px; background:transparent; border: 0.5px solid #333333;"></span><p style="margin:0 0 0 0.5rem;">${d.value}</p>`;
+              return `<span style="width:${8}px; height:${((+d.key) + 1) * stepSize}px; background-color:${props.baseColor};"></span><p style="margin:0 0 0 0.5rem;">${d.value}</p>`;
             });
 
           stepLegend.exit()

@@ -1,9 +1,11 @@
 #{$CountryLockdownIndicatorStrips-container} {
+  $text-color: rgba(255, 255, 255, 0.75);
   /* Write your chart styles here */
   .CountryLockdownIndicatorStrips {
       .legend-container {
           margin-top: 1rem;
           display: flex;
+          color: $text-color;
           .indexLegend {
               display: flex;
               flex-flow: wrap;
@@ -33,6 +35,9 @@
               display: flex;
               flex-flow: column;
               .legend-item {
+                span{
+                  border: none;
+                }
                   p {
                       line-height: 1rem;
                       font-size: 0.875rem;
@@ -52,10 +57,10 @@
         text{
           font-family: $font-family-sans-serif;
           fill: #999;
-          font-size: 0.75rem;
+          font-size: 0.8rem;
         }
         line{
-          stroke-width: 0.75;
+          stroke-width: 0.7;
           stroke: #999;
         }
       }

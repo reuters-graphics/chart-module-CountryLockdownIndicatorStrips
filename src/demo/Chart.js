@@ -40,8 +40,8 @@ class ChartComponent extends React.Component {
         .selection(this.myChartContainer.current)
         .data(casesData)
         .props({
-          stroke: 'steelblue', // colour of line
-          strokeWidth: 2.5, // width of the line
+          stroke: '#4C566A', // colour of line
+          strokeWidth: 3.618, // width of the line
           fill: '#eee', // colour of the bars
           height: 200, // chart height
           avg_days: 7, // avg line should be an how many day rolling avg
