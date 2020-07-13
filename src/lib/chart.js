@@ -5,17 +5,18 @@ import { getDates, formatDateObject } from './utils/utils';
 import defaultData from './defaultData.json';
 import { interpolateHcl } from 'd3';
 import d3SelectionMulti from 'd3-selection-multi';
+import D3Locale from '@reuters-graphics/d3-locale';
 // see docs on https://github.com/reuters-graphics/graphics-atlas-client
 // import AtlasMetadataClient from '@reuters-graphics/graphics-atlas-client';
 // const atlastClient = new AtlasMetadataClient();
 
-const dateParse = d3.timeParse('%Y-%m-%d');
-const dateFormat = d3.timeFormat('%b %e');
 // const dateFormat_tt = d3.timeFormat('%B %e');
 // const numberFormat_tt = d3.format(',');
+const dateParse = d3.timeParse('%Y-%m-%d');
 
 class CountryLockdownIndicatorStrips extends ChartComponent {
     defaultProps = {
+      locale: 'en', // See docs https://github.com/reuters-graphics/d3-locale 
       dateSeries: ['2019-12-31', '2020-07-07'], // yyyy-mm-dd format
       dataParams: {
         date: 'date',
@@ -58,7 +59,7 @@ class CountryLockdownIndicatorStrips extends ChartComponent {
           3: 'require closing all levels',
         },
       },
-      chartTitle: 'Lockdown measures',
+      chartTitle: 'School closing measures',
       axis: true,
       markDates: ['2019-12-31', '2020-03-25', '2020-07-07'], // yyyy-mm-dddd
     };
@@ -70,6 +71,11 @@ class CountryLockdownIndicatorStrips extends ChartComponent {
       const props = this.props();
       const node = this.selection().node();
 
+      // date formatters
+      const locale = new D3Locale(props.locale);
+      const dateFormat = locale.formatTime('%b %e');
+
+      // get date range to be plotted
       if (!props.dateSeries) {
         props.dateSeries = [dateParse(allData[0].date), dateParse(allData[allData.length - 1].date)];
       }
@@ -134,13 +140,6 @@ class CountryLockdownIndicatorStrips extends ChartComponent {
           'padding-left': `${props.margin.left}px`,
         });
 
-      // add chart title
-      if (props.chartTitle) {
-        chartDiv.appendSelect('div')
-          .attr('class', 'font-display chart-title')
-          .html(`<h6>${props.chartTitle}</h6>`);
-      }
-
       // make bars
       const bars = chartDiv.appendSelect('div.bars-container')
         .styles({
@@ -203,7 +202,13 @@ class CountryLockdownIndicatorStrips extends ChartComponent {
               .tickFormat(dateFormat)
           );
       }
-
+      // add chart title
+      if (props.chartTitle) {
+        chartDiv.appendSelect('div.chart-title')
+          .attr('class', 'font-display chart-title')
+          .html(`<h6>${props.chartTitle}</h6>`);
+      }
+      
       // chart legend
       if (props.legendItems) {
         const indexLegendItems = [];
@@ -215,41 +220,37 @@ class CountryLockdownIndicatorStrips extends ChartComponent {
           indexLegendItems.push(item);
         });
         if (props.legendItems.null) {
-          indexLegendItems.push({
+          indexLegendItems.unshift({
             key: 'null',
             value: props.legendItems.null,
           });
         }
-        const legendWidth = (width - props.margin.right - props.margin.left) / indexLegendItems.length;
+        // const legendWidth = (width - props.margin.right - props.margin.left) / indexLegendItems.length;
 
         // make legend
         const legendDiv = chartDiv.appendSelect('div.legend-container');
 
         const indexLegend = legendDiv.appendSelect('div.legend.indexLegend')
-        // .style('align-items', `${props.valign}`)
           .selectAll('.legend-item')
           .data(indexLegendItems); // for smooth data updation
 
         indexLegend.enter().append('div')
           .attr('class', 'legend-item')
-          .styles({
-            display: 'flex',
-            'align-items': 'start',
+          .style('display', 'flex')
+          .style('margin', d => {
+            if (d.key === 'null') { return '1rem 0'; }
           })
-        // .style('width', `${legendWidth}px`)
+          // .style('width', `${legendWidth}px`)
           .html(d => {
             const color = (+d.key !== null) && !(isNaN(+d.key)) ? props.stripColor[+d.key] : props.baseColor;
-            return `<span style="width:1rem; height:1rem;min-width:1rem; min-height:1rem; background: ${color}"></span> <p style="margin:0 0 0 0.5rem;">${d.value}</p>`;
+            return `<span style="width:1.5rem;min-width:1rem; min-height:1rem; background: ${color}"></span> <p style="margin:0 0 0 0.5rem;">${d.value}</p>`;
           })
           .merge(indexLegend)
-          .styles({
-            display: 'flex',
-            'align-items': 'start',
-          })
-          .style('width', `${legendWidth}px`)
+          .style('display', 'flex')
+          // .style('width', `${legendWidth}px`)
           .html(d => {
             const color = (+d.key !== null) && !(isNaN(+d.key)) ? props.stripColor[+d.key] : props.baseColor;
-            return `<span style="width:1rem; height:1rem;min-width:1rem; min-height:1rem; background: ${color}"></span> <p style="margin:0 0 0 0.5rem;">${d.value}</p>`;
+            return `<span style="width:1.5rem; min-width:1rem; min-height:1rem; background: ${color}"></span> <p style="margin:0 0 0 0.5rem;">${d.value}</p>`;
           });
 
         indexLegend.exit()
@@ -269,27 +270,26 @@ class CountryLockdownIndicatorStrips extends ChartComponent {
           console.log(stepLegendItems);
 
           const stepLegend = legendDiv.appendSelect('div.legend.stepLegend')
+            .style('align-items', `${props.valign}`)
             .selectAll('.legend-item')
             .data(stepLegendItems); // for smooth data updation
 
           stepLegend.enter().append('div')
             .attr('class', 'legend-item')
-            .styles({
-              display: 'flex',
-              'align-items': 'center',
-            })
+            .style('display', 'flex')
+            .style('flex-flow', 'column-reverse')
+            // .style('width', `${legendWidth}px`)
             .html((d, i) => {
               const stepSize = (stripheight) / stepLegendItems.length;
-              return `<span style="width:${8}px; height:${((+d.key) + 1) * stepSize}px; background-color:${props.baseColor};"></span><p style="margin:0 0 0 0.5rem;">${d.value}</p>`;
+              return `<span style="width:100%; height:${((+d.key) + 1) * stepSize}px; background-color:${props.baseColor};"></span><p style="margin:0 0.5rem 0.5rem 0.5rem;">${d.value}</p>`;
             })
             .merge(stepLegend)
-            .styles({
-              display: 'flex',
-              'align-items': 'center',
-            })
+            .style('display', 'flex')
+            .style('flex-flow', 'column-reverse')
+            // .style('width', `${legendWidth}px`)
             .html((d, i) => {
               const stepSize = (stripheight) / stepLegendItems.length;
-              return `<span style="width:${8}px; height:${((+d.key) + 1) * stepSize}px; background-color:${props.baseColor};"></span><p style="margin:0 0 0 0.5rem;">${d.value}</p>`;
+              return `<span style="width:100%; height:${((+d.key) + 1) * stepSize}px; background-color:${props.baseColor};"></span><p style="margin:0 0.5rem 0.5rem 0.5rem;">${d.value}</p>`;
             });
 
           stepLegend.exit()

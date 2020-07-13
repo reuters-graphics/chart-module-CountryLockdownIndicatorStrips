@@ -3,18 +3,25 @@
   /* Write your chart styles here */
   .CountryLockdownIndicatorStrips {
     .chart-title h6{
+      margin-top: 1rem;
       font-weight: lighter;
       color: rgba(255, 255, 255, 0.75)!important;
     }
       .legend-container {
           margin-top: 1rem;
           display: flex;
+          flex-flow: column-reverse;
+          align-items: flex-start;
+          justify-content: space-between;
           color: $text-color;
+          @media (max-width: 350px) {
+            flex-wrap: wrap-reverse;
+          }
           .indexLegend {
               display: flex;
-              flex-flow: wrap;
-              width: 60%;
-              @media (max-width: 768px) {
+              flex-flow: column-reverse;
+              width: 80%;
+              @media (max-width: 576px) {
                   display: flex;
                   flex-flow: column;
               }
@@ -24,12 +31,13 @@
                   width: 100%;
               }
               .legend-item {
+                  // align-items: flex-start;
+                  // margin: 0.5rem 1.5rem 0.5rem 0;
                   @media (max-width: 768px) {
-                      width: auto !important;
-                  }
-                  margin: 0.5rem 1.5rem 0.5rem 0;
+                    width: auto !important;
+                }
                   p {
-                      line-height: 1rem;
+                      line-height: 1.25rem;
                       font-size: 0.8rem;
                       font-weight: lighter;
                   }
@@ -37,8 +45,10 @@
           }
           .stepLegend {
               display: flex;
-              flex-flow: column;
+              flex-flow: row;
+              margin-bottom: 1rem;
               .legend-item {
+                align-items: center;
                 span{
                   border: none;
                 }
