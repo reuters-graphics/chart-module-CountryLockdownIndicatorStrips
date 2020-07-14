@@ -1,0 +1,1 @@
+{"ast":null,"code":"var __jsx = React.createElement;\nimport Logo from './Logo';\nimport React from 'react';\n\nconst Header = () => __jsx(\"nav\", {\n  className: \"nav\"\n}, __jsx(Logo, null));\n\nexport default Header;","map":null,"metadata":{},"sourceType":"module"}
