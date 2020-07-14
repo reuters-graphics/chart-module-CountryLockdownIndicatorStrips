@@ -1522,15 +1522,13 @@ var CountryLockdownIndicatorStrips = /*#__PURE__*/function (_ChartComponent) {
     _defineProperty(_assertThisInitialized(_this), "defaultProps", {
       locale: 'en',
       // See docs https://github.com/reuters-graphics/d3-locale 
-      dateSeries: ['2019-12-31', '2020-07-07'],
-      // yyyy-mm-dd format
-      dataParams: {
-        date: 'date',
-        index: 'c1',
-        stepValue: 'flag',
-        steps: 2 // stepValue = 0, 1...
-
-      },
+      // dateSeries: ['2019-12-31', '2020-07-07'], // yyyy-mm-dd format
+      // dataParams: {
+      //   date: 'date',
+      //   index: 'c1',
+      //   stepValue: 'flag',
+      //   steps: 2, // stepValue = 0, 1...
+      // },
       height: 150,
       stripHeight: 50,
       margin: {
@@ -1542,34 +1540,26 @@ var CountryLockdownIndicatorStrips = /*#__PURE__*/function (_ChartComponent) {
       valign: 'center',
       // start, center, baseline
       baseColor: 'rgba(255,255,255,0.1)',
-      stripColor: {
-        // should be numeric values that are mapped from the data
-        0: '#4C566A',
-        1: '#948072',
-        2: '#f68e26',
-        3: '#de2d26'
-      },
       // stripColor: { // should be numeric values that are mapped from the data
       //   0: 'rgba(255,255,255,0.25)', // '#4C566A',
       //   1: 'rgba(255,255,255,0.5)',
       //   2: 'rgba(255,255,255,0.75)',
       //   3: 'rgba(255,195,195,1)',
       // },
-      legendItems: {
-        // should contain items from stripColor
-        "null": 'no data',
-        stepLegend: {
-          0: 'targeted',
-          1: 'nationwide'
-        },
-        indexLegend: {
-          0: 'no measures',
-          1: 'recommend closing',
-          2: 'require closing on some levels',
-          3: 'require closing all levels'
-        }
-      },
-      chartTitle: 'School closing measures',
+      // legendItems: { // should contain items from stripColor
+      //   null: 'no data',
+      //   stepLegend: {
+      //     0: 'targeted',
+      //     1: 'nationwide',
+      //   },
+      //   indexLegend: {
+      //     0: 'no measures',
+      //     1: 'recommend closing',
+      //     2: 'require closing on some levels',
+      //     3: 'require closing all levels',
+      //   },
+      // },
+      // chartTitle: 'School closing measures',
       axis: true // markDates: ['2019-12-31', '2020-03-25', '2020-07-07'], // yyyy-mm-dddd
 
     });
@@ -1627,7 +1617,7 @@ var CountryLockdownIndicatorStrips = /*#__PURE__*/function (_ChartComponent) {
       }));
       var colorRange = props.stripColor ? colorDomain.map(function (d) {
         return props.stripColor["".concat(d)];
-      }) : ['#cccccc', '#333333'];
+      }) : ['#333333', '#cccccc'];
       var colorScale = d3.scaleLinear().domain(colorDomain).range(colorRange).interpolate(interpolateHcl); // main chart container
 
       var chartDiv = this.selection().appendSelect('div') // see docs in ./utils/d3.js
@@ -1696,8 +1686,8 @@ var CountryLockdownIndicatorStrips = /*#__PURE__*/function (_ChartComponent) {
           }
         }).filter(function (d) {
           return !isNaN(d);
-        }) : [dateSeries[0], dateSeries.slice(-1)[0]].concat(stepChange);
-        console.log(markDates);
+        }) : [dateSeries[0], dateSeries.slice(-1)[0]].concat(stepChange); // console.log(markDates);
+
         var xAxis = chartDiv.appendSelect('svg').attr('width', width - props.margin.left - props.margin.right).attr('height', 25).attr('transform', 'translate(0, 0)');
         xAxis.appendSelect('g.axis-x').attr('class', 'axis-x axis').transition(transition).attr('transform', 'translate(0,0)').call(d3.axisBottom(xScale).tickValues(markDates).tickFormat(dateFormat));
       } // add chart title
@@ -1709,41 +1699,44 @@ var CountryLockdownIndicatorStrips = /*#__PURE__*/function (_ChartComponent) {
 
 
       if (props.legendItems) {
-        var indexLegendItems = [];
-        Object.keys(props.legendItems.indexLegend).forEach(function (d) {
-          var item = {
-            key: d,
-            value: props.legendItems.indexLegend[d]
-          };
-          indexLegendItems.push(item);
-        });
-
-        if (props.legendItems["null"]) {
-          indexLegendItems.unshift({
-            key: 'null',
-            value: props.legendItems["null"]
-          });
-        } // const legendWidth = (width - props.margin.right - props.margin.left) / indexLegendItems.length;
         // make legend
-
-
         var legendDiv = chartDiv.appendSelect('div.legend-container');
-        var indexLegend = legendDiv.appendSelect('div.legend.indexLegend').selectAll('.legend-item').data(indexLegendItems); // for smooth data updation
 
-        indexLegend.enter().append('div').attr('class', 'legend-item').style('display', 'flex').style('margin', function (d) {
-          if (d.key === 'null') {
-            return '1rem 0';
-          }
-        }) // .style('width', `${legendWidth}px`)
-        .html(function (d) {
-          var color = +d.key !== null && !isNaN(+d.key) ? props.stripColor[+d.key] : props.baseColor;
-          return "<span style=\"width:1.5rem;min-width:1rem; min-height:1rem; background: ".concat(color, "\"></span> <p style=\"margin:0 0 0 0.5rem;\">").concat(d.value, "</p>");
-        }).merge(indexLegend).style('display', 'flex') // .style('width', `${legendWidth}px`)
-        .html(function (d) {
-          var color = +d.key !== null && !isNaN(+d.key) ? props.stripColor[+d.key] : props.baseColor;
-          return "<span style=\"width:1.5rem; min-width:1rem; min-height:1rem; background: ".concat(color, "\"></span> <p style=\"margin:0 0 0 0.5rem;\">").concat(d.value, "</p>");
-        });
-        indexLegend.exit().transition(transition).remove();
+        if (props.legendItems.indexLegend) {
+          var indexLegendItems = [];
+          Object.keys(props.legendItems.indexLegend).forEach(function (d) {
+            var item = {
+              key: d,
+              value: props.legendItems.indexLegend[d]
+            };
+            indexLegendItems.push(item);
+          });
+
+          if (props.legendItems["null"]) {
+            indexLegendItems.unshift({
+              key: 'null',
+              value: props.legendItems["null"]
+            });
+          } // const legendWidth = (width - props.margin.right - props.margin.left) / indexLegendItems.length;
+
+
+          var indexLegend = legendDiv.appendSelect('div.legend.indexLegend').selectAll('.legend-item').data(indexLegendItems); // for smooth data updation
+
+          indexLegend.enter().append('div').attr('class', 'legend-item').style('display', 'flex').style('margin', function (d) {
+            if (d.key === 'null') {
+              return '1rem 0';
+            }
+          }) // .style('width', `${legendWidth}px`)
+          .html(function (d) {
+            var color = +d.key !== null && !isNaN(+d.key) ? colorScale(+d.key) : props.baseColor;
+            return "<span style=\"width:1.5rem;min-width:1rem; min-height:1rem; background: ".concat(color, "\"></span> <p style=\"margin:0 0 0 0.5rem;\">").concat(d.value, "</p>");
+          }).merge(indexLegend).style('display', 'flex') // .style('width', `${legendWidth}px`)
+          .html(function (d) {
+            var color = +d.key !== null && !isNaN(+d.key) ? colorScale(+d.key) : props.baseColor;
+            return "<span style=\"width:1.5rem; min-width:1rem; min-height:1rem; background: ".concat(color, "\"></span> <p style=\"margin:0 0 0 0.5rem;\">").concat(d.value, "</p>");
+          });
+          indexLegend.exit().transition(transition).remove();
+        }
 
         if (props.legendItems.stepLegend) {
           // step legend stuff
