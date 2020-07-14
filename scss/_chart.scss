@@ -1,11 +1,13 @@
 #{$CountryLockdownIndicatorStrips-container} {
   $text-color: rgba(255, 255, 255, 0.75);
+  $dark-blue: #2f353f;
   /* Write your chart styles here */
   .CountryLockdownIndicatorStrips {
+    background-color: $dark-blue;
     .chart-title h6{
       margin-top: 1rem;
       font-weight: lighter;
-      color: rgba(255, 255, 255, 0.75)!important;
+      color: $text-color!important;
     }
       .legend-container {
           margin-top: 1rem;

@@ -41,7 +41,7 @@ $CountryLockdownindicatorstrips-container: '#chart';
 ```
 ## Customising the chart
 
-Data has to be in the following format, an array of objects.
+Data has to be in the following format, an array of objects. The dafault keys are ```date```, ```index```, ```stepValue``` and ```steps```. If the data is different, make sure to map the keys using the ```dataParams``` property.
 ```
 [
   {
@@ -58,7 +58,7 @@ Data has to be in the following format, an array of objects.
 ```
 where, date is in ```YYYY-MM-DD```. The other parameters are the data point for strip color and for strip height variation.
 
-```props`` will be used to customise the chart object. If a prop is not used while calling the chart, the default values mentioned will apply. 
+```props``` will be used to customise the chart object. If a prop is not used while calling the chart, the default values mentioned will apply. 
 
 Usage as folllows -
 
@@ -70,7 +70,7 @@ props({
     date: 'date',
     index: 'c1',
     stepValue: 'flag',
-    steps: 2, // stepValue = 0, 1... If there is only one step, use 1
+    steps: 2, // stepValue = 0, 1...
   },
   height: 150, // Default height of the chartblock
   stripHeight: 50, // Default height of the strips
@@ -88,13 +88,13 @@ props({
     2: '#f68e26',
     3: '#de2d26',
   },
-  legendItems: { // should contain items from stripColor
+  legendItems: { // should contain items from stripColor. Mention this prop if you wish to show a legend. Index and Step legends can be displayed independently.
     null: 'no data',
-    stepLegend: {
+    stepLegend: { // for the strip width variation
       0: 'targeted',
       1: 'nationwide',
     },
-    indexLegend: { 
+    indexLegend: { // for the main colors of indices
       0: 'no measures',
       1: 'recommend closing',
       2: 'require closing on some levels',
@@ -105,6 +105,81 @@ props({
   axis: true, // To show the x-axis. Default true
   markDates: ['2019-12-31', '2020-03-25', '2020-07-07'], // yyyy-mm-dddd. Default marks axis extent dates
 })
+```
+
+## Usage example
+
+This chart component used along with line chart component from https://github.com/reuters-graphics/chart-module-weeklyaverage.git
+
+##### Line chart
+```javascript
+this.myChart
+    .selection(this.chartContainer.current)
+    .data(casesData)
+    .props({
+      stroke: 'rgba(255, 255, 255, 0.15)', // colour of line
+      strokeWidth: 3.14, // width of the line
+      fill: '#eee', // colour of the bars
+      height: 120, // chart height
+      avg_days: 7, // avg line should be an how many day rolling avg
+      left_y_axis: true,
+      x_axis: false,
+      bars: false,
+      margin: {
+        left: 18, right: 18, top: 10, bottom: 5,
+      },
+      date_range: ['2019-12-31', '2020-07-07'],
+      padding: 0,
+      labels: true, // Setting this to true will show a label
+      variable_name: 'cases', 
+    })
+    .draw();
+```
+##### Strip chart
+```javascript
+this.chart
+    .selection(this.chartContainer.current)
+    .data(lockdownData)
+    .props({
+      locale: 'en',
+      dateSeries: ['2019-12-31', '2020-07-07'],
+      dataParams: {
+        date: 'date',
+        index: 'c1',
+        stepValue: 'flag',
+        steps: 2, // stepValue = 0, 1...
+      },
+      margin: {
+        top: 10,
+        right: 18,
+        bottom: 10,
+        left: 18,
+      },
+      baseColor: 'rgba(255,255,255,0.1)',
+      stripColor: {
+        0: '#4C566A',
+        1: '#948072',
+        2: '#f68e26',
+        3: '#de2d26',
+      },
+      legendItems: { // should contain items from stripColor
+        null: 'no data',
+        stepLegend: {
+          0: 'targeted',
+          1: 'nationwide',
+        },
+        indexLegend: {
+          0: 'no measures',
+          1: 'recommend closing',
+          2: 'require closing on some levels',
+          3: 'require closing all levels',
+        },
+      },
+      chartTitle: 'School closing measures',
+      axis: true,
+    })
+    .draw();
+
 ```
 
 ## Developing chart modules

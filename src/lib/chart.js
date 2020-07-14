@@ -17,13 +17,13 @@ const dateParse = d3.timeParse('%Y-%m-%d');
 class CountryLockdownIndicatorStrips extends ChartComponent {
     defaultProps = {
       locale: 'en', // See docs https://github.com/reuters-graphics/d3-locale 
-      dateSeries: ['2019-12-31', '2020-07-07'], // yyyy-mm-dd format
-      dataParams: {
-        date: 'date',
-        index: 'c1',
-        stepValue: 'flag',
-        steps: 2, // stepValue = 0, 1...
-      },
+      // dateSeries: ['2019-12-31', '2020-07-07'], // yyyy-mm-dd format
+      // dataParams: {
+      //   date: 'date',
+      //   index: 'c1',
+      //   stepValue: 'flag',
+      //   steps: 2, // stepValue = 0, 1...
+      // },
       height: 150,
       stripHeight: 50,
       margin: {
@@ -34,32 +34,26 @@ class CountryLockdownIndicatorStrips extends ChartComponent {
       },
       valign: 'center', // start, center, baseline
       baseColor: 'rgba(255,255,255,0.1)',
-      stripColor: { // should be numeric values that are mapped from the data
-        0: '#4C566A',
-        1: '#948072',
-        2: '#f68e26',
-        3: '#de2d26',
-      },
       // stripColor: { // should be numeric values that are mapped from the data
       //   0: 'rgba(255,255,255,0.25)', // '#4C566A',
       //   1: 'rgba(255,255,255,0.5)',
       //   2: 'rgba(255,255,255,0.75)',
       //   3: 'rgba(255,195,195,1)',
       // },
-      legendItems: { // should contain items from stripColor
-        null: 'no data',
-        stepLegend: {
-          0: 'targeted',
-          1: 'nationwide',
-        },
-        indexLegend: {
-          0: 'no measures',
-          1: 'recommend closing',
-          2: 'require closing on some levels',
-          3: 'require closing all levels',
-        },
-      },
-      chartTitle: 'School closing measures',
+      // legendItems: { // should contain items from stripColor
+      //   null: 'no data',
+      //   stepLegend: {
+      //     0: 'targeted',
+      //     1: 'nationwide',
+      //   },
+      //   indexLegend: {
+      //     0: 'no measures',
+      //     1: 'recommend closing',
+      //     2: 'require closing on some levels',
+      //     3: 'require closing all levels',
+      //   },
+      // },
+      // chartTitle: 'School closing measures',
       axis: true,
       // markDates: ['2019-12-31', '2020-03-25', '2020-07-07'], // yyyy-mm-dddd
     };
@@ -119,7 +113,7 @@ class CountryLockdownIndicatorStrips extends ChartComponent {
 
       const colorDomain = props.stripColor ? (Object.keys(props.stripColor)).map(d => +d) : d3.extent(data.map(d => d[props.dataParams.index]));
   
-      const colorRange = props.stripColor ? colorDomain.map(d => props.stripColor[`${d}`]) : ['#cccccc', '#333333'];
+      const colorRange = props.stripColor ? colorDomain.map(d => props.stripColor[`${d}`]) : ['#333333', '#cccccc'];
   
       const colorScale = d3.scaleLinear()
         .domain(colorDomain)
@@ -204,7 +198,7 @@ class CountryLockdownIndicatorStrips extends ChartComponent {
               return dateParse(d);
             } 
           }).filter(d => !isNaN(d)) : [dateSeries[0], dateSeries.slice(-1)[0]].concat(stepChange);
-        console.log(markDates);
+        // console.log(markDates);
         const xAxis = chartDiv.appendSelect('svg')
           .attr('width', width - props.margin.left - props.margin.right)
           .attr('height', 25)
@@ -229,51 +223,52 @@ class CountryLockdownIndicatorStrips extends ChartComponent {
       
       // chart legend
       if (props.legendItems) {
-        const indexLegendItems = [];
-        (Object.keys(props.legendItems.indexLegend)).forEach(d => {
-          const item = {
-            key: d,
-            value: props.legendItems.indexLegend[d],
-          };
-          indexLegendItems.push(item);
-        });
-        if (props.legendItems.null) {
-          indexLegendItems.unshift({
-            key: 'null',
-            value: props.legendItems.null,
-          });
-        }
-        // const legendWidth = (width - props.margin.right - props.margin.left) / indexLegendItems.length;
-
         // make legend
         const legendDiv = chartDiv.appendSelect('div.legend-container');
-
-        const indexLegend = legendDiv.appendSelect('div.legend.indexLegend')
-          .selectAll('.legend-item')
-          .data(indexLegendItems); // for smooth data updation
-
-        indexLegend.enter().append('div')
-          .attr('class', 'legend-item')
-          .style('display', 'flex')
-          .style('margin', d => {
-            if (d.key === 'null') { return '1rem 0'; }
-          })
-          // .style('width', `${legendWidth}px`)
-          .html(d => {
-            const color = (+d.key !== null) && !(isNaN(+d.key)) ? props.stripColor[+d.key] : props.baseColor;
-            return `<span style="width:1.5rem;min-width:1rem; min-height:1rem; background: ${color}"></span> <p style="margin:0 0 0 0.5rem;">${d.value}</p>`;
-          })
-          .merge(indexLegend)
-          .style('display', 'flex')
-          // .style('width', `${legendWidth}px`)
-          .html(d => {
-            const color = (+d.key !== null) && !(isNaN(+d.key)) ? props.stripColor[+d.key] : props.baseColor;
-            return `<span style="width:1.5rem; min-width:1rem; min-height:1rem; background: ${color}"></span> <p style="margin:0 0 0 0.5rem;">${d.value}</p>`;
+        if (props.legendItems.indexLegend) {
+          const indexLegendItems = [];
+          (Object.keys(props.legendItems.indexLegend)).forEach(d => {
+            const item = {
+              key: d,
+              value: props.legendItems.indexLegend[d],
+            };
+            indexLegendItems.push(item);
           });
+          if (props.legendItems.null) {
+            indexLegendItems.unshift({
+              key: 'null',
+              value: props.legendItems.null,
+            });
+          }
+          // const legendWidth = (width - props.margin.right - props.margin.left) / indexLegendItems.length;
 
-        indexLegend.exit()
-          .transition(transition)
-          .remove();
+          const indexLegend = legendDiv.appendSelect('div.legend.indexLegend')
+            .selectAll('.legend-item')
+            .data(indexLegendItems); // for smooth data updation
+
+          indexLegend.enter().append('div')
+            .attr('class', 'legend-item')
+            .style('display', 'flex')
+            .style('margin', d => {
+              if (d.key === 'null') { return '1rem 0'; }
+            })
+          // .style('width', `${legendWidth}px`)
+            .html(d => {
+              const color = (+d.key !== null) && !(isNaN(+d.key)) ? colorScale(+d.key) : props.baseColor;
+              return `<span style="width:1.5rem;min-width:1rem; min-height:1rem; background: ${color}"></span> <p style="margin:0 0 0 0.5rem;">${d.value}</p>`;
+            })
+            .merge(indexLegend)
+            .style('display', 'flex')
+          // .style('width', `${legendWidth}px`)
+            .html(d => {
+              const color = (+d.key !== null) && !(isNaN(+d.key)) ? colorScale(+d.key) : props.baseColor;
+              return `<span style="width:1.5rem; min-width:1rem; min-height:1rem; background: ${color}"></span> <p style="margin:0 0 0 0.5rem;">${d.value}</p>`;
+            });
+
+          indexLegend.exit()
+            .transition(transition)
+            .remove();
+        }
 
         if (props.legendItems.stepLegend) {
           // step legend stuff

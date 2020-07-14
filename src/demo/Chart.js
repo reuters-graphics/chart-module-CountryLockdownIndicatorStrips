@@ -27,8 +27,45 @@ class ChartComponent extends React.Component {
       // Use our chart module.
       this.chart
         .selection(this.chartContainer.current)
-      // .props({ fill: base.blue.hex })
-      // .data()
+        // .data(lockdownData)
+        .props({
+          locale: 'en',
+          dateSeries: ['2019-12-31', '2020-07-07'],
+          dataParams: {
+            date: 'date',
+            index: 'c1',
+            stepValue: 'flag',
+            steps: 2, // stepValue = 0, 1...
+          },
+          margin: {
+            top: 10,
+            right: 18,
+            bottom: 10,
+            left: 18,
+          },
+          baseColor: 'rgba(255,255,255,0.1)',
+          stripColor: {
+            0: '#4C566A',
+            1: '#948072',
+            2: '#f68e26',
+            3: '#de2d26',
+          },
+          legendItems: { // should contain items from stripColor
+            null: 'no data',
+            stepLegend: {
+              0: 'targeted',
+              1: 'nationwide',
+            },
+            indexLegend: {
+              0: 'no measures',
+              1: 'recommend closing',
+              2: 'require closing on some levels',
+              3: 'require closing all levels',
+            },
+          },
+          chartTitle: 'School closing measures',
+          axis: true,
+        })
         .draw();
 
       // Add a listener to resize chart with the window.
@@ -41,7 +78,7 @@ class ChartComponent extends React.Component {
         .data(casesData)
         .props({
           stroke: 'rgba(255, 255, 255, 0.15)', // colour of line
-          strokeWidth: 2.5, // width of the line
+          strokeWidth: 3.14, // width of the line
           fill: '#eee', // colour of the bars
           height: 120, // chart height
           avg_days: 7, // avg line should be an how many day rolling avg
