@@ -63,50 +63,48 @@ where, date is in ```YYYY-MM-DD```. The other parameters are the data point for 
 Usage as folllows -
 
 ```javascript
-class CountryLockdownIndicatorStrips extends ChartComponent {
-  defaultProps = {
-    locale: 'en', // Default language is English. See docs https://github.com/reuters-graphics/d3-locale 
-    dateSeries: ['2019-12-31', '2020-07-07'], // yyyy-mm-dd format
-    dataParams: { // pass the key accessors from your data to the chart
-      date: 'date',
-      index: 'c1',
-      stepValue: 'flag',
-      steps: 2, // stepValue = 0, 1...
+props({
+  locale: 'en', // Default language is English. See docs https://github.com/reuters-graphics/d3-locale 
+  dateSeries: ['2019-12-31', '2020-07-07'], // yyyy-mm-dd format
+  dataParams: { // pass the key accessors from your data to the chart
+    date: 'date',
+    index: 'c1',
+    stepValue: 'flag',
+    steps: 2, // stepValue = 0, 1...
+  },
+  height: 150, // Default height of the chartblock
+  stripHeight: 50, // Default height of the strips
+  margin: { // Default values
+    top: 10,
+    right: 18,
+    bottom: 10,
+    left: 18,
+  },
+  valign: 'center', // start, center or baseline. Default center.
+  baseColor: 'rgba(255,255,255,0.1)',
+  stripColor: { // should be numeric values that are mapped from the data
+    0: '#4C566A',
+    1: '#948072',
+    2: '#f68e26',
+    3: '#de2d26',
+  },
+  legendItems: { // should contain items from stripColor
+    null: 'no data',
+    stepLegend: {
+      0: 'targeted',
+      1: 'nationwide',
     },
-    height: 150, // Default height of the chartblock
-    stripHeight: 50, // Default height of the strips
-    margin: { // Default values
-      top: 10,
-      right: 18,
-      bottom: 10,
-      left: 18,
+    indexLegend: { 
+      0: 'no measures',
+      1: 'recommend closing',
+      2: 'require closing on some levels',
+      3: 'require closing all levels',
     },
-    valign: 'center', // start, center or baseline. Default center.
-    baseColor: 'rgba(255,255,255,0.1)',
-    stripColor: { // should be numeric values that are mapped from the data
-      0: '#4C566A',
-      1: '#948072',
-      2: '#f68e26',
-      3: '#de2d26',
-    },
-    legendItems: { // should contain items from stripColor
-      null: 'no data',
-      stepLegend: {
-        0: 'targeted',
-        1: 'nationwide',
-      },
-      indexLegend: {
-        0: 'no measures',
-        1: 'recommend closing',
-        2: 'require closing on some levels',
-        3: 'require closing all levels',
-      },
-    },
-    chartTitle: 'School closing measures',
-    axis: true, // To show the x-axis. Default true
-    markDates: ['2019-12-31', '2020-03-25', '2020-07-07'], // yyyy-mm-dddd. Default marks axis extent dates
-  };
-}
+  },
+  chartTitle: 'School closing measures', // Blank by default
+  axis: true, // To show the x-axis. Default true
+  markDates: ['2019-12-31', '2020-03-25', '2020-07-07'], // yyyy-mm-dddd. Default marks axis extent dates
+})
 ```
 
 ## Developing chart modules
