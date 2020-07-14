@@ -61,7 +61,7 @@ class CountryLockdownIndicatorStrips extends ChartComponent {
       },
       chartTitle: 'School closing measures',
       axis: true,
-      markDates: ['2019-12-31', '2020-03-25', '2020-07-07'], // yyyy-mm-dddd
+      // markDates: ['2019-12-31', '2020-03-25', '2020-07-07'], // yyyy-mm-dddd
     };
 
     defaultData = defaultData;
@@ -145,6 +145,7 @@ class CountryLockdownIndicatorStrips extends ChartComponent {
         .styles({
           display: 'flex',
           'align-items': `${props.valign}`,
+          'justify-content': 'center',
         })
         .selectAll('.bar')
         .data(data, (d, i) => d[props.dataParams.date]); // for smooth data updation
@@ -153,7 +154,11 @@ class CountryLockdownIndicatorStrips extends ChartComponent {
         .attr('class', d => `bar ${d[props.dataParams.date]}`)
         .style('display', 'inline-block')
         .style('height', d => {
-          return yScale(d[props.dataParams.stepValue]) + 'px';
+          if (isNaN(d[props.dataParams.stepValue])) {
+            return yScale(0) + 'px';
+          } else {
+            return yScale(d[props.dataParams.stepValue]) + 'px';
+          }
         })
         .style('width', xScale.bandwidth() + 'px')
         .style('background', d => {
@@ -164,7 +169,11 @@ class CountryLockdownIndicatorStrips extends ChartComponent {
         .transition(transition)
         .style('display', 'inline-block')
         .style('height', d => {
-          return yScale(d[props.dataParams.stepValue]) + 'px';
+          if (isNaN(d[props.dataParams.stepValue])) {
+            return yScale(0) + 'px';
+          } else {
+            return yScale(d[props.dataParams.stepValue]) + 'px';
+          }
         })
         .style('width', xScale.bandwidth() + 'px')
         .style('background', d => {
@@ -180,13 +189,22 @@ class CountryLockdownIndicatorStrips extends ChartComponent {
       // add axis
       // console.log(xScale(dateParse('2020-07-07')));
       if (props.axis) {
+        const stepChange = [];
+        if (props.dataParams.steps > 1) {
+          for (let i = 1; i < props.dataParams.steps; i++) {
+            const match = data.find((e) => (e[props.dataParams.stepValue]) === i);
+            if (match) {
+              stepChange.push(dateParse(match[props.dataParams.date]));
+            }
+          }
+        }
         const markDates = props.markDates ? 
           props.markDates.map(d => {
             if (!isNaN(xScale(dateParse(d)))) {
               return dateParse(d);
             } 
-          }).filter(d => !isNaN(d)) : [dateSeries[0], dateSeries.slice(-1)[0]];
-
+          }).filter(d => !isNaN(d)) : [dateSeries[0], dateSeries.slice(-1)[0]].concat(stepChange);
+        console.log(markDates);
         const xAxis = chartDiv.appendSelect('svg')
           .attr('width', width - props.margin.left - props.margin.right)
           .attr('height', 25)

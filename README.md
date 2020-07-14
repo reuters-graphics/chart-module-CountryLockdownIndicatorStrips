@@ -70,7 +70,7 @@ props({
     date: 'date',
     index: 'c1',
     stepValue: 'flag',
-    steps: 2, // stepValue = 0, 1...
+    steps: 2, // stepValue = 0, 1... If there is only one step, use 1
   },
   height: 150, // Default height of the chartblock
   stripHeight: 50, // Default height of the strips
@@ -81,7 +81,7 @@ props({
     left: 18,
   },
   valign: 'center', // start, center or baseline. Default center.
-  baseColor: 'rgba(255,255,255,0.1)',
+  baseColor: 'rgba(255,255,255,0.1)', // Simple gray fill. Used for null values as well.
   stripColor: { // should be numeric values that are mapped from the data
     0: '#4C566A',
     1: '#948072',

@@ -18,7 +18,7 @@ $boxshadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
 @import '~@reuters-graphics/chart-module-weeklyaverage/scss/main';
 // Some styles for the preview page...
 #{$CountryLockdownIndicatorStrips-container} {
-    // box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
 }
 body {
   background-color: $dark-blue;
