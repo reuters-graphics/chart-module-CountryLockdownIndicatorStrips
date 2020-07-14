@@ -80,7 +80,7 @@ class CountryLockdownIndicatorStrips extends ChartComponent {
         props.dateSeries = [dateParse(allData[0].date), dateParse(allData[allData.length - 1].date)];
       }
       const dateSeries = getDates(props.dateSeries[0], props.dateSeries[1]);   
-      console.log((dateSeries));
+      // console.log((dateSeries));
 
       // set data for the date series
       const data = dateSeries.map((d) => {
@@ -267,7 +267,7 @@ class CountryLockdownIndicatorStrips extends ChartComponent {
             };
             stepLegendItems.push(item);
           });
-          console.log(stepLegendItems);
+          // console.log(stepLegendItems);
 
           const stepLegend = legendDiv.appendSelect('div.legend.stepLegend')
             .style('align-items', `${props.valign}`)
