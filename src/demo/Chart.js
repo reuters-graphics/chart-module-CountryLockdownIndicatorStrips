@@ -1,11 +1,11 @@
 import Chart from '../lib/chart.js';
 import ChartContainer from './furniture/ChartContainer';
-import casesData from './casesData.json';
 import React from 'react';
-import { base } from '@reuters-graphics/style-color/dist/categorical';
-import debounce from 'lodash/debounce';
-
 import WeeklyAverage from '@reuters-graphics/chart-module-weeklyaverage';
+import { base } from '@reuters-graphics/style-color/dist/categorical';
+import casesData from './casesData.json';
+import debounce from 'lodash/debounce';
+import defaultData from './defaultData.json';
 
 class ChartComponent extends React.Component {
     state = { width: '' };
@@ -27,7 +27,7 @@ class ChartComponent extends React.Component {
       // Use our chart module.
       this.chart
         .selection(this.chartContainer.current)
-        // .data(lockdownData)
+        .data(defaultData)
         .props({
           locale: 'en',
           dateSeries: ['2019-12-31', '2020-07-07'],

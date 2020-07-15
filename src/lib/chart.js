@@ -5,8 +5,8 @@ import ChartComponent from './base/ChartComponent';
 // import d3SelectionMulti from 'd3-selection-multi';
 import D3Locale from '@reuters-graphics/d3-locale';
 import d3 from './utils/d3';
-import defaultData from './defaultData.json';
 import { interpolateHcl } from 'd3';
+
 // see docs on https://github.com/reuters-graphics/graphics-atlas-client
 // import AtlasMetadataClient from '@reuters-graphics/graphics-atlas-client';
 // const atlastClient = new AtlasMetadataClient();
@@ -59,7 +59,7 @@ class CountryLockdownIndicatorStrips extends ChartComponent {
       // markDates: ['2019-12-31', '2020-03-25', '2020-07-07'], // yyyy-mm-dddd
     };
 
-    defaultData = defaultData;
+    defaultData = [];
 
     draw() {
       const allData = this.data();
