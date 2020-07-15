@@ -1,11 +1,12 @@
+import { formatDateObject, getDates } from './utils/utils';
+
 /* eslint-disable no-trailing-spaces */
 import ChartComponent from './base/ChartComponent';
+// import d3SelectionMulti from 'd3-selection-multi';
+import D3Locale from '@reuters-graphics/d3-locale';
 import d3 from './utils/d3';
-import { getDates, formatDateObject } from './utils/utils';
 import defaultData from './defaultData.json';
 import { interpolateHcl } from 'd3';
-import d3SelectionMulti from 'd3-selection-multi';
-import D3Locale from '@reuters-graphics/d3-locale';
 // see docs on https://github.com/reuters-graphics/graphics-atlas-client
 // import AtlasMetadataClient from '@reuters-graphics/graphics-atlas-client';
 // const atlastClient = new AtlasMetadataClient();
@@ -16,7 +17,7 @@ const dateParse = d3.timeParse('%Y-%m-%d');
 
 class CountryLockdownIndicatorStrips extends ChartComponent {
     defaultProps = {
-      locale: 'en', // See docs https://github.com/reuters-graphics/d3-locale 
+      locale: 'en', // See docs https://github.com/reuters-graphics/d3-locale
       // dateSeries: ['2019-12-31', '2020-07-07'], // yyyy-mm-dd format
       // dataParams: {
       //   date: 'date',
@@ -73,7 +74,7 @@ class CountryLockdownIndicatorStrips extends ChartComponent {
       if (!props.dateSeries) {
         props.dateSeries = [dateParse(allData[0].date), dateParse(allData[allData.length - 1].date)];
       }
-      const dateSeries = getDates(props.dateSeries[0], props.dateSeries[1]);   
+      const dateSeries = getDates(props.dateSeries[0], props.dateSeries[1]);
       // console.log((dateSeries));
 
       // set data for the date series
@@ -86,7 +87,7 @@ class CountryLockdownIndicatorStrips extends ChartComponent {
           obj[props.dataParams.date] = formatDateObject(d);
           return obj;
         }
-      }); 
+      });
       // console.log(data);
       // get country details from AtlasClient from ISO-2
       // props.country = atlastClient.getCountry(props.countryISO2);
@@ -101,7 +102,7 @@ class CountryLockdownIndicatorStrips extends ChartComponent {
       const stripheight = props.legendItems ? (props.stripHeight - props.margin.top) : (props.height - props.margin.top - props.margin.bottom);
 
       // set scales
-  
+
       const xScale = d3.scaleBand()
         .domain(dateSeries)
         .range([0, width - props.margin.left - props.margin.right])
@@ -112,9 +113,9 @@ class CountryLockdownIndicatorStrips extends ChartComponent {
         .range([stripheight / (props.dataParams.steps), stripheight]);
 
       const colorDomain = props.stripColor ? (Object.keys(props.stripColor)).map(d => +d) : d3.extent(data.map(d => d[props.dataParams.index]));
-  
+
       const colorRange = props.stripColor ? colorDomain.map(d => props.stripColor[`${d}`]) : ['#333333', '#cccccc'];
-  
+
       const colorScale = d3.scaleLinear()
         .domain(colorDomain)
         .range(colorRange)
@@ -127,20 +128,16 @@ class CountryLockdownIndicatorStrips extends ChartComponent {
         .style('width', `${width}px`)
       // .style('height', `${props.height}px`)
         .appendSelect('div')
-        .styles({
-          'padding-top': `${props.margin.top}px`,
-          'padding-right': `${props.margin.right}px`,
-          'padding-bottom': `${props.margin.bottom}px`,
-          'padding-left': `${props.margin.left}px`,
-        });
+        .style('padding-top', `${props.margin.top}px`)
+        .style('padding-right', `${props.margin.right}px`)
+        .style('padding-bottom', `${props.margin.bottom}px`)
+        .style('padding-left', `${props.margin.left}px`);
 
       // make bars
       const bars = chartDiv.appendSelect('div.bars-container')
-        .styles({
-          display: 'flex',
-          'align-items': `${props.valign}`,
-          'justify-content': 'center',
-        })
+        .style('display', 'flex')
+        .style('align-items', `${props.valign}`)
+        .style('justify-content', 'center')
         .selectAll('.bar')
         .data(data, (d, i) => d[props.dataParams.date]); // for smooth data updation
 
@@ -192,11 +189,11 @@ class CountryLockdownIndicatorStrips extends ChartComponent {
             }
           }
         }
-        const markDates = props.markDates ? 
+        const markDates = props.markDates ?
           props.markDates.map(d => {
             if (!isNaN(xScale(dateParse(d)))) {
               return dateParse(d);
-            } 
+            }
           }).filter(d => !isNaN(d)) : [dateSeries[0], dateSeries.slice(-1)[0]].concat(stepChange);
         // console.log(markDates);
         const xAxis = chartDiv.appendSelect('svg')
@@ -220,7 +217,7 @@ class CountryLockdownIndicatorStrips extends ChartComponent {
           .attr('class', 'font-display chart-title')
           .html(`<h6>${props.chartTitle}</h6>`);
       }
-      
+
       // chart legend
       if (props.legendItems) {
         // make legend

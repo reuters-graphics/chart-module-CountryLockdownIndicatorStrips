@@ -1,0 +1,1 @@
+{"ast":null,"code":"var __jsx = React.createElement;\nimport Chart from './Chart';\nimport Header from './furniture/Header';\nimport React from 'react';\n\nconst App = () => __jsx(React.Fragment, null, __jsx(Header, null), __jsx(\"article\", {\n  className: \"container-fluid\"\n}, __jsx(Chart, null)));\n\nexport default App;","map":null,"metadata":{},"sourceType":"module"}

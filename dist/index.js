@@ -1,9 +1,11 @@
-import * as d3 from 'd3';
-import { selection, interpolateHcl } from 'd3';
-import merge from 'lodash/merge';
-import { timeFormat, timeParse } from 'd3-time-format';
-import 'd3-selection-multi';
-import D3Locale from '@reuters-graphics/d3-locale';
+'use strict';
+
+function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
+
+var d3TimeFormat = require('d3-time-format');
+var d3 = require('d3');
+var merge = _interopDefault(require('lodash/merge'));
+var D3Locale = _interopDefault(require('@reuters-graphics/d3-locale'));
 
 function _classCallCheck(instance, Constructor) {
   if (!(instance instanceof Constructor)) {
@@ -176,6 +178,128 @@ function _createSuper(Derived) {
   };
 }
 
+var t0 = new Date,
+    t1 = new Date;
+
+function newInterval(floori, offseti, count, field) {
+
+  function interval(date) {
+    return floori(date = arguments.length === 0 ? new Date : new Date(+date)), date;
+  }
+
+  interval.floor = function(date) {
+    return floori(date = new Date(+date)), date;
+  };
+
+  interval.ceil = function(date) {
+    return floori(date = new Date(date - 1)), offseti(date, 1), floori(date), date;
+  };
+
+  interval.round = function(date) {
+    var d0 = interval(date),
+        d1 = interval.ceil(date);
+    return date - d0 < d1 - date ? d0 : d1;
+  };
+
+  interval.offset = function(date, step) {
+    return offseti(date = new Date(+date), step == null ? 1 : Math.floor(step)), date;
+  };
+
+  interval.range = function(start, stop, step) {
+    var range = [], previous;
+    start = interval.ceil(start);
+    step = step == null ? 1 : Math.floor(step);
+    if (!(start < stop) || !(step > 0)) return range; // also handles Invalid Date
+    do range.push(previous = new Date(+start)), offseti(start, step), floori(start);
+    while (previous < start && start < stop);
+    return range;
+  };
+
+  interval.filter = function(test) {
+    return newInterval(function(date) {
+      if (date >= date) while (floori(date), !test(date)) date.setTime(date - 1);
+    }, function(date, step) {
+      if (date >= date) {
+        if (step < 0) while (++step <= 0) {
+          while (offseti(date, -1), !test(date)) {} // eslint-disable-line no-empty
+        } else while (--step >= 0) {
+          while (offseti(date, +1), !test(date)) {} // eslint-disable-line no-empty
+        }
+      }
+    });
+  };
+
+  if (count) {
+    interval.count = function(start, end) {
+      t0.setTime(+start), t1.setTime(+end);
+      floori(t0), floori(t1);
+      return Math.floor(count(t0, t1));
+    };
+
+    interval.every = function(step) {
+      step = Math.floor(step);
+      return !isFinite(step) || !(step > 0) ? null
+          : !(step > 1) ? interval
+          : interval.filter(field
+              ? function(d) { return field(d) % step === 0; }
+              : function(d) { return interval.count(0, d) % step === 0; });
+    };
+  }
+
+  return interval;
+}
+
+var durationMinute = 6e4;
+var durationDay = 864e5;
+
+var day = newInterval(function(date) {
+  date.setHours(0, 0, 0, 0);
+}, function(date, step) {
+  date.setDate(date.getDate() + step);
+}, function(start, end) {
+  return (end - start - (end.getTimezoneOffset() - start.getTimezoneOffset()) * durationMinute) / durationDay;
+}, function(date) {
+  return date.getDate() - 1;
+});
+
+//   startDate = new Date(startDate);
+//   stopDate = new Date(stopDate);
+//   const dateArray = [];
+//   const currentDate = startDate;
+//   while (currentDate <= stopDate) {
+//     const dt = new Date(currentDate);
+//     dateArray.push(dt);
+//     currentDate.setDate(currentDate.getDate() + 1);
+//   }
+//   return dateArray;
+// }
+// function formatDateObject(date, separator) {
+//   if (!separator) {
+//     separator = '-';
+//   }
+//   const yyyy = date.getFullYear();
+//   const mm = date.getMonth() < 10 ? `0${date.getMonth() + 1}` : date.getMonth() + 1;
+//   const dd = date.getDate() < 10 ? `0${date.getDate()}` : date.getDate();
+//   return `${yyyy}${separator}${mm}${separator}${dd}`;
+//
+
+function getDates(startDate, stopDate) {
+  var dateParse = d3TimeFormat.timeParse('%Y-%m-%d'); // include last day
+
+  stopDate = dateParse(stopDate);
+  var endDate = new Date(stopDate.getFullYear(), stopDate.getMonth(), stopDate.getDate() + 1);
+  var dateArray = day.range(dateParse(startDate), endDate, 1);
+  return dateArray;
+}
+
+function formatDateObject(date, separator) {
+  if (!separator) {
+    separator = '-';
+  }
+
+  return d3TimeFormat.timeFormat("%Y".concat(separator, "%m").concat(separator, "%d"))(date);
+}
+
 var ChartError = /*#__PURE__*/function (_Error) {
   _inherits(ChartError, _Error);
 
@@ -289,13 +413,13 @@ var ErrorDataType = /*#__PURE__*/function (_ChartError4) {
   return ErrorDataType;
 }(ChartError);
 
-selection.prototype.moveToFront = function () {
+d3.selection.prototype.moveToFront = function () {
   return this.each(function () {
     this.parentNode.appendChild(this);
   });
 };
 
-selection.prototype.moveToBack = function () {
+d3.selection.prototype.moveToBack = function () {
   return this.each(function () {
     var firstChild = this.parentNode.firstChild;
 
@@ -327,7 +451,7 @@ selection.prototype.moveToBack = function () {
  */
 
 
-selection.prototype.appendSelect = function (querySelector) {
+d3.selection.prototype.appendSelect = function (querySelector) {
   // Test querySlector w/ classes
   if (!/^[a-zA-Z]+[0-9]?\.-?[_a-zA-Z][_a-zA-Z0-9.-]*[a-zA-Z0-9]*$/.test(querySelector)) {
     // Test querySelector just an element
@@ -430,128 +554,6 @@ var ChartComponent = /*#__PURE__*/function () {
 
   return ChartComponent;
 }();
-
-var t0 = new Date,
-    t1 = new Date;
-
-function newInterval(floori, offseti, count, field) {
-
-  function interval(date) {
-    return floori(date = arguments.length === 0 ? new Date : new Date(+date)), date;
-  }
-
-  interval.floor = function(date) {
-    return floori(date = new Date(+date)), date;
-  };
-
-  interval.ceil = function(date) {
-    return floori(date = new Date(date - 1)), offseti(date, 1), floori(date), date;
-  };
-
-  interval.round = function(date) {
-    var d0 = interval(date),
-        d1 = interval.ceil(date);
-    return date - d0 < d1 - date ? d0 : d1;
-  };
-
-  interval.offset = function(date, step) {
-    return offseti(date = new Date(+date), step == null ? 1 : Math.floor(step)), date;
-  };
-
-  interval.range = function(start, stop, step) {
-    var range = [], previous;
-    start = interval.ceil(start);
-    step = step == null ? 1 : Math.floor(step);
-    if (!(start < stop) || !(step > 0)) return range; // also handles Invalid Date
-    do range.push(previous = new Date(+start)), offseti(start, step), floori(start);
-    while (previous < start && start < stop);
-    return range;
-  };
-
-  interval.filter = function(test) {
-    return newInterval(function(date) {
-      if (date >= date) while (floori(date), !test(date)) date.setTime(date - 1);
-    }, function(date, step) {
-      if (date >= date) {
-        if (step < 0) while (++step <= 0) {
-          while (offseti(date, -1), !test(date)) {} // eslint-disable-line no-empty
-        } else while (--step >= 0) {
-          while (offseti(date, +1), !test(date)) {} // eslint-disable-line no-empty
-        }
-      }
-    });
-  };
-
-  if (count) {
-    interval.count = function(start, end) {
-      t0.setTime(+start), t1.setTime(+end);
-      floori(t0), floori(t1);
-      return Math.floor(count(t0, t1));
-    };
-
-    interval.every = function(step) {
-      step = Math.floor(step);
-      return !isFinite(step) || !(step > 0) ? null
-          : !(step > 1) ? interval
-          : interval.filter(field
-              ? function(d) { return field(d) % step === 0; }
-              : function(d) { return interval.count(0, d) % step === 0; });
-    };
-  }
-
-  return interval;
-}
-
-var durationMinute = 6e4;
-var durationDay = 864e5;
-
-var day = newInterval(function(date) {
-  date.setHours(0, 0, 0, 0);
-}, function(date, step) {
-  date.setDate(date.getDate() + step);
-}, function(start, end) {
-  return (end - start - (end.getTimezoneOffset() - start.getTimezoneOffset()) * durationMinute) / durationDay;
-}, function(date) {
-  return date.getDate() - 1;
-});
-
-//   startDate = new Date(startDate);
-//   stopDate = new Date(stopDate);
-//   const dateArray = [];
-//   const currentDate = startDate;
-//   while (currentDate <= stopDate) {
-//     const dt = new Date(currentDate);
-//     dateArray.push(dt);
-//     currentDate.setDate(currentDate.getDate() + 1);
-//   }
-//   return dateArray;
-// }
-// function formatDateObject(date, separator) {
-//   if (!separator) {
-//     separator = '-';
-//   }
-//   const yyyy = date.getFullYear();
-//   const mm = date.getMonth() < 10 ? `0${date.getMonth() + 1}` : date.getMonth() + 1;
-//   const dd = date.getDate() < 10 ? `0${date.getDate()}` : date.getDate();
-//   return `${yyyy}${separator}${mm}${separator}${dd}`;
-//
-
-function getDates(startDate, stopDate) {
-  var dateParse = timeParse('%Y-%m-%d'); // include last day
-
-  stopDate = dateParse(stopDate);
-  var endDate = new Date(stopDate.getFullYear(), stopDate.getMonth(), stopDate.getDate() + 1);
-  var dateArray = day.range(dateParse(startDate), endDate, 1);
-  return dateArray;
-}
-
-function formatDateObject(date, separator) {
-  if (!separator) {
-    separator = '-';
-  }
-
-  return timeFormat("%Y".concat(separator, "%m").concat(separator, "%d"))(date);
-}
 
 var defaultData = [
 	{
@@ -1521,7 +1523,7 @@ var CountryLockdownIndicatorStrips = /*#__PURE__*/function (_ChartComponent) {
 
     _defineProperty(_assertThisInitialized(_this), "defaultProps", {
       locale: 'en',
-      // See docs https://github.com/reuters-graphics/d3-locale 
+      // See docs https://github.com/reuters-graphics/d3-locale
       // dateSeries: ['2019-12-31', '2020-07-07'], // yyyy-mm-dd format
       // dataParams: {
       //   date: 'date',
@@ -1618,22 +1620,13 @@ var CountryLockdownIndicatorStrips = /*#__PURE__*/function (_ChartComponent) {
       var colorRange = props.stripColor ? colorDomain.map(function (d) {
         return props.stripColor["".concat(d)];
       }) : ['#333333', '#cccccc'];
-      var colorScale = d3.scaleLinear().domain(colorDomain).range(colorRange).interpolate(interpolateHcl); // main chart container
+      var colorScale = d3.scaleLinear().domain(colorDomain).range(colorRange).interpolate(d3.interpolateHcl); // main chart container
 
       var chartDiv = this.selection().appendSelect('div') // see docs in ./utils/d3.js
       .attr('class', 'CountryLockdownIndicatorStrips').style('width', "".concat(width, "px")) // .style('height', `${props.height}px`)
-      .appendSelect('div').styles({
-        'padding-top': "".concat(props.margin.top, "px"),
-        'padding-right': "".concat(props.margin.right, "px"),
-        'padding-bottom': "".concat(props.margin.bottom, "px"),
-        'padding-left': "".concat(props.margin.left, "px")
-      }); // make bars
+      .appendSelect('div').style('padding-top', "".concat(props.margin.top, "px")).style('padding-right', "".concat(props.margin.right, "px")).style('padding-bottom', "".concat(props.margin.bottom, "px")).style('padding-left', "".concat(props.margin.left, "px")); // make bars
 
-      var bars = chartDiv.appendSelect('div.bars-container').styles({
-        display: 'flex',
-        'align-items': "".concat(props.valign),
-        'justify-content': 'center'
-      }).selectAll('.bar').data(data, function (d, i) {
+      var bars = chartDiv.appendSelect('div.bars-container').style('display', 'flex').style('align-items', "".concat(props.valign)).style('justify-content', 'center').selectAll('.bar').data(data, function (d, i) {
         return d[props.dataParams.date];
       }); // for smooth data updation
 
@@ -1771,4 +1764,4 @@ var CountryLockdownIndicatorStrips = /*#__PURE__*/function (_ChartComponent) {
   return CountryLockdownIndicatorStrips;
 }(ChartComponent); // console.log(this.defaultProps);
 
-export default CountryLockdownIndicatorStrips;
+module.exports = CountryLockdownIndicatorStrips;
