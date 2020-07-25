@@ -770,7 +770,7 @@ var CountryLockdownIndicatorStrips = /*#__PURE__*/function (_ChartComponent) {
           }
 
           indexLegendItems = indexLegendItems.filter(function (d) {
-            return d.value !== null;
+            return d.value !== 'null' && d.value !== null;
           }); // const legendWidth = (width - props.margin.right - props.margin.left) / indexLegendItems.length;
 
           var indexLegend = legendDiv.appendSelect('div.legend.indexLegend').selectAll('.legend-item').data(indexLegendItems, function (d) {
@@ -801,7 +801,7 @@ var CountryLockdownIndicatorStrips = /*#__PURE__*/function (_ChartComponent) {
           }); // console.log(props.legendItems.stepLegend);
 
           stepLegendItems = stepLegendItems.filter(function (d) {
-            return d.value !== null;
+            return d.value !== 'null' && d.value !== null;
           });
           var stepLegend = legendDiv.appendSelect('div.legend.stepLegend').style('align-items', "".concat(props.valign)).selectAll('.legend-item').data(stepLegendItems, function (d) {
             return d.key;
