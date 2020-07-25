@@ -238,7 +238,7 @@ class CountryLockdownIndicatorStrips extends ChartComponent {
             });
           }
 
-          indexLegendItems = indexLegendItems.filter(d => d.value !== null);
+          indexLegendItems = indexLegendItems.filter(d => (d.value !== 'null' && d.value !== null));
           // const legendWidth = (width - props.margin.right - props.margin.left) / indexLegendItems.length;
 
           const indexLegend = legendDiv.appendSelect('div.legend.indexLegend')
@@ -273,7 +273,7 @@ class CountryLockdownIndicatorStrips extends ChartComponent {
             };
           });
           // console.log(props.legendItems.stepLegend);
-          stepLegendItems = stepLegendItems.filter(d => d.value !== null);
+          stepLegendItems = stepLegendItems.filter(d => (d.value !== 'null' && d.value !== null));
 
           const stepLegend = legendDiv.appendSelect('div.legend.stepLegend')
             .style('align-items', `${props.valign}`)
