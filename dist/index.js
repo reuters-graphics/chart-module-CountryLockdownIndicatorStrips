@@ -767,12 +767,19 @@ var CountryLockdownIndicatorStrips = /*#__PURE__*/function (_ChartComponent) {
               key: 'null',
               value: props.legendItems["null"]
             });
-          } // const legendWidth = (width - props.margin.right - props.margin.left) / indexLegendItems.length;
+          }
 
+          indexLegendItems = indexLegendItems.filter(function (d) {
+            return d.value !== null;
+          }); // const legendWidth = (width - props.margin.right - props.margin.left) / indexLegendItems.length;
 
-          var indexLegend = legendDiv.appendSelect('div.legend.indexLegend').selectAll('.legend-item').data(indexLegendItems); // for smooth data updation
+          var indexLegend = legendDiv.appendSelect('div.legend.indexLegend').selectAll('.legend-item').data(indexLegendItems, function (d) {
+            return d.key;
+          }); // for smooth data updation
 
-          indexLegend.enter().append('div').attr('class', 'legend-item').style('display', 'flex').style('margin', function (d) {
+          indexLegend.enter().append('div').attr('class', function (d) {
+            return "legend-item ".concat(d.key);
+          }).style('display', 'flex').style('margin', function (d) {
             if (d.key === 'null') {
               return '1rem 0';
             }
@@ -780,36 +787,33 @@ var CountryLockdownIndicatorStrips = /*#__PURE__*/function (_ChartComponent) {
           .html(function (d) {
             var color = +d.key !== null && !isNaN(+d.key) ? colorScale(+d.key) : props.baseColor;
             return "<span style=\"width:1.5rem;min-width:1rem; min-height:1rem; background: ".concat(color, "\"></span> <p style=\"margin:0 0 0 0.5rem;\">").concat(d.value, "</p>");
-          }).merge(indexLegend).style('display', 'flex') // .style('width', `${legendWidth}px`)
-          .html(function (d) {
-            var color = +d.key !== null && !isNaN(+d.key) ? colorScale(+d.key) : props.baseColor;
-            return "<span style=\"width:1.5rem; min-width:1rem; min-height:1rem; background: ".concat(color, "\"></span> <p style=\"margin:0 0 0 0.5rem;\">").concat(d.value, "</p>");
-          });
+          }).merge(indexLegend).transition(transition);
           indexLegend.exit().transition(transition).remove();
         }
 
         if (props.legendItems.stepLegend) {
           // step legend stuff
-          var stepLegendItems = [];
-          Object.keys(props.legendItems.stepLegend).forEach(function (d) {
-            var item = {
+          var stepLegendItems = Object.keys(props.legendItems.stepLegend).map(function (d) {
+            return {
               key: d,
               value: props.legendItems.stepLegend[d]
             };
-            stepLegendItems.push(item);
-          }); // console.log(stepLegendItems);
+          }); // console.log(props.legendItems.stepLegend);
 
-          var stepLegend = legendDiv.appendSelect('div.legend.stepLegend').style('align-items', "".concat(props.valign)).selectAll('.legend-item').data(stepLegendItems); // for smooth data updation
-
-          stepLegend.enter().append('div').attr('class', 'legend-item').style('display', 'flex').style('flex-flow', 'column-reverse') // .style('width', `${legendWidth}px`)
-          .html(function (d, i) {
-            var stepSize = stripheight / stepLegendItems.length;
-            return "<span style=\"width:100%; height:".concat((+d.key + 1) * stepSize, "px; background-color:").concat(props.baseColor, ";\"></span><p style=\"margin:0 0.5rem 0.5rem 0.5rem;\">").concat(d.value, "</p>");
-          }).merge(stepLegend).style('display', 'flex').style('flex-flow', 'column-reverse') // .style('width', `${legendWidth}px`)
-          .html(function (d, i) {
-            var stepSize = stripheight / stepLegendItems.length;
-            return "<span style=\"width:100%; height:".concat((+d.key + 1) * stepSize, "px; background-color:").concat(props.baseColor, ";\"></span><p style=\"margin:0 0.5rem 0.5rem 0.5rem;\">").concat(d.value, "</p>");
+          stepLegendItems = stepLegendItems.filter(function (d) {
+            return d.value !== null;
           });
+          var stepLegend = legendDiv.appendSelect('div.legend.stepLegend').style('align-items', "".concat(props.valign)).selectAll('.legend-item').data(stepLegendItems, function (d) {
+            return d.key;
+          }); // for smooth data updation
+
+          stepLegend.enter().append('div').attr('class', function (d) {
+            return "legend-item ".concat(d.key);
+          }).style('display', 'flex').style('flex-flow', 'column-reverse') // .style('width', `${legendWidth}px`)
+          .html(function (d, i) {
+            var stepSize = stripheight / stepLegendItems.length;
+            return "<span style=\"width:100%; height:".concat((+d.key + 1) * stepSize, "px; background-color:").concat(props.baseColor, ";\"></span><p style=\"margin:0 0.5rem 0.5rem 0.5rem;\">").concat(d.value, "</p>");
+          }).merge(stepLegend).transition(transition);
           stepLegend.exit().transition(transition).remove();
         }
       }
