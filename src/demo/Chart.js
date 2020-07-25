@@ -19,7 +19,24 @@ class ChartComponent extends React.Component {
 
     // A resize function to redraw the chart.
     resize = debounce(() => {
-      this.chart.draw();
+      this.chart
+        .props({
+          legendItems: { // should contain items from stripColor
+            // null: null,
+            // stepLegend: {
+            //   0: null,
+            //   1: null,
+            // },
+            indexLegend: {
+              0: 'no NONO',
+              1: 'recommend closing',
+              2: 'require closing on some levels',
+              3: 'require closing all levels',
+              4: null,
+            },
+          },
+        })
+        .draw();
       this.myChart.draw();
     }, 250);
 
@@ -61,6 +78,7 @@ class ChartComponent extends React.Component {
               1: 'recommend closing',
               2: 'require closing on some levels',
               3: 'require closing all levels',
+              4: 'something',
             },
           },
           chartTitle: 'School closing measures',

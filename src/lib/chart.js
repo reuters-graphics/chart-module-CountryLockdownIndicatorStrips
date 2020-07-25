@@ -223,7 +223,7 @@ class CountryLockdownIndicatorStrips extends ChartComponent {
         // make legend
         const legendDiv = chartDiv.appendSelect('div.legend-container');
         if (props.legendItems.indexLegend) {
-          const indexLegendItems = [];
+          var indexLegendItems = [];
           (Object.keys(props.legendItems.indexLegend)).forEach(d => {
             const item = {
               key: d,
@@ -237,14 +237,16 @@ class CountryLockdownIndicatorStrips extends ChartComponent {
               value: props.legendItems.null,
             });
           }
+
+          indexLegendItems = indexLegendItems.filter(d => d.value !== null);
           // const legendWidth = (width - props.margin.right - props.margin.left) / indexLegendItems.length;
 
           const indexLegend = legendDiv.appendSelect('div.legend.indexLegend')
             .selectAll('.legend-item')
-            .data(indexLegendItems); // for smooth data updation
+            .data(indexLegendItems, d => d.key); // for smooth data updation
 
           indexLegend.enter().append('div')
-            .attr('class', 'legend-item')
+            .attr('class', d => `legend-item ${d.key}`)
             .style('display', 'flex')
             .style('margin', d => {
               if (d.key === 'null') { return '1rem 0'; }
@@ -255,12 +257,7 @@ class CountryLockdownIndicatorStrips extends ChartComponent {
               return `<span style="width:1.5rem;min-width:1rem; min-height:1rem; background: ${color}"></span> <p style="margin:0 0 0 0.5rem;">${d.value}</p>`;
             })
             .merge(indexLegend)
-            .style('display', 'flex')
-          // .style('width', `${legendWidth}px`)
-            .html(d => {
-              const color = (+d.key !== null) && !(isNaN(+d.key)) ? colorScale(+d.key) : props.baseColor;
-              return `<span style="width:1.5rem; min-width:1rem; min-height:1rem; background: ${color}"></span> <p style="margin:0 0 0 0.5rem;">${d.value}</p>`;
-            });
+            .transition(transition);
 
           indexLegend.exit()
             .transition(transition)
@@ -269,23 +266,22 @@ class CountryLockdownIndicatorStrips extends ChartComponent {
 
         if (props.legendItems.stepLegend) {
           // step legend stuff
-          const stepLegendItems = [];
-          (Object.keys(props.legendItems.stepLegend)).forEach(d => {
-            const item = {
+          var stepLegendItems = Object.keys(props.legendItems.stepLegend).map(d => {
+            return {
               key: d,
               value: props.legendItems.stepLegend[d],
             };
-            stepLegendItems.push(item);
           });
-          // console.log(stepLegendItems);
+          // console.log(props.legendItems.stepLegend);
+          stepLegendItems = stepLegendItems.filter(d => d.value !== null);
 
           const stepLegend = legendDiv.appendSelect('div.legend.stepLegend')
             .style('align-items', `${props.valign}`)
             .selectAll('.legend-item')
-            .data(stepLegendItems); // for smooth data updation
+            .data(stepLegendItems, d => d.key); // for smooth data updation
 
           stepLegend.enter().append('div')
-            .attr('class', 'legend-item')
+            .attr('class', d => `legend-item ${d.key}`)
             .style('display', 'flex')
             .style('flex-flow', 'column-reverse')
             // .style('width', `${legendWidth}px`)
@@ -294,13 +290,7 @@ class CountryLockdownIndicatorStrips extends ChartComponent {
               return `<span style="width:100%; height:${((+d.key) + 1) * stepSize}px; background-color:${props.baseColor};"></span><p style="margin:0 0.5rem 0.5rem 0.5rem;">${d.value}</p>`;
             })
             .merge(stepLegend)
-            .style('display', 'flex')
-            .style('flex-flow', 'column-reverse')
-            // .style('width', `${legendWidth}px`)
-            .html((d, i) => {
-              const stepSize = (stripheight) / stepLegendItems.length;
-              return `<span style="width:100%; height:${((+d.key) + 1) * stepSize}px; background-color:${props.baseColor};"></span><p style="margin:0 0.5rem 0.5rem 0.5rem;">${d.value}</p>`;
-            });
+            .transition(transition);
 
           stepLegend.exit()
             .transition(transition)

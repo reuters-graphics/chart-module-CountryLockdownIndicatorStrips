@@ -87,6 +87,7 @@ props({
     1: '#948072',
     2: '#f68e26',
     3: '#de2d26',
+    // if you specify fewer colours than in the legend, it will extrapolate the last colour
   },
   legendItems: { // should contain items from stripColor. Mention this prop if you wish to show a legend. Index and Step legends can be displayed independently.
     null: 'no data',
@@ -100,6 +101,8 @@ props({
       2: 'require closing on some levels',
       3: 'require closing all levels',
     },
+    // CAVEAT: If your data update needs an update to legend, specify the max number of items that will be shown and set the items to null wherever not applicable.
+    // If you want a legend item to not update as data updates, simply do not mention it in the update props.
   },
   chartTitle: 'School closing measures', // Blank by default
   axis: true, // To show the x-axis. Default true
