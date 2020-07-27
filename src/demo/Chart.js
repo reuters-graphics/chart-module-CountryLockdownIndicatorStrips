@@ -65,7 +65,8 @@ class ChartComponent extends React.Component {
             0: '#4C566A',
             1: '#948072',
             2: '#f68e26',
-            3: '#de2d26',
+            3: '#e6550d',
+            4: '#de2d26',
           },
           legendItems: { // should contain items from stripColor
             null: 'no data',
@@ -78,7 +79,7 @@ class ChartComponent extends React.Component {
               1: 'recommend closing',
               2: 'require closing on some levels',
               3: 'require closing all levels',
-              4: 'something',
+              4: 'strict',
             },
           },
           chartTitle: 'School closing measures',

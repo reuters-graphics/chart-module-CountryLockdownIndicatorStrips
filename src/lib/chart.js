@@ -252,12 +252,11 @@ class CountryLockdownIndicatorStrips extends ChartComponent {
               if (d.key === 'null') { return '1rem 0'; }
             })
           // .style('width', `${legendWidth}px`)
+            .merge(indexLegend)
             .html(d => {
               const color = (+d.key !== null) && !(isNaN(+d.key)) ? colorScale(+d.key) : props.baseColor;
               return `<span style="width:1.5rem;min-width:1rem; min-height:1rem; background: ${color}"></span> <p style="margin:0 0 0 0.5rem;">${d.value}</p>`;
-            })
-            .merge(indexLegend)
-            .transition(transition);
+            });
 
           indexLegend.exit()
             .transition(transition)
@@ -285,12 +284,11 @@ class CountryLockdownIndicatorStrips extends ChartComponent {
             .style('display', 'flex')
             .style('flex-flow', 'column-reverse')
             // .style('width', `${legendWidth}px`)
+            .merge(stepLegend)
             .html((d, i) => {
               const stepSize = (stripheight) / stepLegendItems.length;
               return `<span style="width:100%; height:${((+d.key) + 1) * stepSize}px; background-color:${props.baseColor};"></span><p style="margin:0 0.5rem 0.5rem 0.5rem;">${d.value}</p>`;
-            })
-            .merge(stepLegend)
-            .transition(transition);
+            });
 
           stepLegend.exit()
             .transition(transition)
