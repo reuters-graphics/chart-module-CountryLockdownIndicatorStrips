@@ -784,10 +784,10 @@ var CountryLockdownIndicatorStrips = /*#__PURE__*/function (_ChartComponent) {
               return '1rem 0';
             }
           }) // .style('width', `${legendWidth}px`)
-          .html(function (d) {
+          .merge(indexLegend).html(function (d) {
             var color = +d.key !== null && !isNaN(+d.key) ? colorScale(+d.key) : props.baseColor;
             return "<span style=\"width:1.5rem;min-width:1rem; min-height:1rem; background: ".concat(color, "\"></span> <p style=\"margin:0 0 0 0.5rem;\">").concat(d.value, "</p>");
-          }).merge(indexLegend).transition(transition);
+          });
           indexLegend.exit().transition(transition).remove();
         }
 
@@ -810,10 +810,10 @@ var CountryLockdownIndicatorStrips = /*#__PURE__*/function (_ChartComponent) {
           stepLegend.enter().append('div').attr('class', function (d) {
             return "legend-item ".concat(d.key);
           }).style('display', 'flex').style('flex-flow', 'column-reverse') // .style('width', `${legendWidth}px`)
-          .html(function (d, i) {
+          .merge(stepLegend).html(function (d, i) {
             var stepSize = stripheight / stepLegendItems.length;
             return "<span style=\"width:100%; height:".concat((+d.key + 1) * stepSize, "px; background-color:").concat(props.baseColor, ";\"></span><p style=\"margin:0 0.5rem 0.5rem 0.5rem;\">").concat(d.value, "</p>");
-          }).merge(stepLegend).transition(transition);
+          });
           stepLegend.exit().transition(transition).remove();
         }
       }
