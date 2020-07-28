@@ -259,7 +259,6 @@ class CountryLockdownIndicatorStrips extends ChartComponent {
             });
 
           indexLegend.exit()
-            .transition(transition)
             .remove();
         }
 
