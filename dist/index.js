@@ -788,7 +788,7 @@ var CountryLockdownIndicatorStrips = /*#__PURE__*/function (_ChartComponent) {
             var color = +d.key !== null && !isNaN(+d.key) ? colorScale(+d.key) : props.baseColor;
             return "<span style=\"width:1.5rem;min-width:1rem; min-height:1rem; background: ".concat(color, "\"></span> <p style=\"margin:0 0 0 0.5rem;\">").concat(d.value, "</p>");
           });
-          indexLegend.exit().transition(transition).remove();
+          indexLegend.exit().remove();
         }
 
         if (props.legendItems.stepLegend) {
@@ -814,7 +814,7 @@ var CountryLockdownIndicatorStrips = /*#__PURE__*/function (_ChartComponent) {
             var stepSize = stripheight / stepLegendItems.length;
             return "<span style=\"width:100%; height:".concat((+d.key + 1) * stepSize, "px; background-color:").concat(props.baseColor, ";\"></span><p style=\"margin:0 0.5rem 0.5rem 0.5rem;\">").concat(d.value, "</p>");
           });
-          stepLegend.exit().transition(transition).remove();
+          stepLegend.exit().remove();
         }
       }
 
