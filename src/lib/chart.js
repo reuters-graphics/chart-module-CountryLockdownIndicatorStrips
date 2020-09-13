@@ -56,6 +56,7 @@ class CountryLockdownIndicatorStrips extends ChartComponent {
       // },
       // chartTitle: 'School closing measures',
       axis: true,
+      dateFormat: '%b %e',
       // markDates: ['2019-12-31', '2020-03-25', '2020-07-07'], // yyyy-mm-dddd
     };
 
@@ -68,7 +69,7 @@ class CountryLockdownIndicatorStrips extends ChartComponent {
 
       // date formatters
       const locale = new D3Locale(props.locale);
-      const dateFormat = locale.formatTime('%b %e');
+      const dateFormat = locale.formatTime(props.dateFormat);
 
       // get date range to be plotted
       if (!props.dateSeries) {

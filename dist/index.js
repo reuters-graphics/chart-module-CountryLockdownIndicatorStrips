@@ -619,7 +619,8 @@ var CountryLockdownIndicatorStrips = /*#__PURE__*/function (_ChartComponent) {
       //   },
       // },
       // chartTitle: 'School closing measures',
-      axis: true // markDates: ['2019-12-31', '2020-03-25', '2020-07-07'], // yyyy-mm-dddd
+      axis: true,
+      dateFormat: '%b %e' // markDates: ['2019-12-31', '2020-03-25', '2020-07-07'], // yyyy-mm-dddd
 
     });
 
@@ -636,7 +637,7 @@ var CountryLockdownIndicatorStrips = /*#__PURE__*/function (_ChartComponent) {
       var node = this.selection().node(); // date formatters
 
       var locale = new D3Locale(props.locale);
-      var dateFormat = locale.formatTime('%b %e'); // get date range to be plotted
+      var dateFormat = locale.formatTime(props.dateFormat); // get date range to be plotted
 
       if (!props.dateSeries) {
         props.dateSeries = [dateParse(allData[0].date), dateParse(allData[allData.length - 1].date)];
